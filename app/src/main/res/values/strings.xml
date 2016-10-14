@@ -8,4 +8,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="title_fragment_my_events">My Events</string>
+    <string name="title_fragment_search_events">Search Events</string>
+    <string name="title_fragment_my_profile">My Profile</string>
 </resources>
