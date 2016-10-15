@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">BeaCodeApp</string>
+    <string name="beacode6">BEACODE<sup><small><small>6</small></small></sup></string>
+
+    <string name="app_name">BeaCode Events</string>
+    <string name="title_activity_main">BeaCode Events</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="title_fragment_my_events">My Events</string>
+    <string name="title_fragment_search_events">Search Events</string>
+    <string name="title_fragment_my_profile">My Profile</string>
 </resources>
