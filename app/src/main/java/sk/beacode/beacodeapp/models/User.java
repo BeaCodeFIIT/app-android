@@ -1,5 +1,7 @@
 package sk.beacode.beacodeapp.models;
 
+import android.media.Image;
+
 import java.util.List;
 
 public class User {
@@ -8,6 +10,7 @@ public class User {
     private String password;
     private String salt;
     private String roles;
+    private Image profilePicture;
     private List<Interest> interests;
 
     public String getName() {
@@ -56,5 +59,13 @@ public class User {
 
     public void setInterests(List<Interest> interests) {
         this.interests = interests;
+    }
+
+    public Image getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Image profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
