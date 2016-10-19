@@ -1,5 +1,7 @@
 package sk.beacode.beacodeapp.models;
 
+import android.graphics.drawable.Drawable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class Event {
     private Date end;
     private String location;
     private String description;
+    private Drawable picture;
     private List<Exhibit> exhibitions;
 
     public String getName() {
@@ -57,5 +60,13 @@ public class Event {
 
     public void setExhibitions(List<Exhibit> exhibitions) {
         this.exhibitions = exhibitions;
+    }
+
+    public Drawable getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Drawable picture) {
+        this.picture = picture;
     }
 }
