@@ -1,7 +1,6 @@
 package sk.beacode.beacodeapp.models;
 
-import android.graphics.drawable.Drawable;
-import android.media.Image;
+import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class User {
     private String password;
     private String salt;
     private String roles;
-    private Drawable profilePicture;
+    private Bitmap photo;
     private List<Interest> interests;
 
     public String getName() {
@@ -62,11 +61,11 @@ public class User {
         this.interests = interests;
     }
 
-    public Drawable getProfilePicture() {
-        return profilePicture;
+    public Bitmap getPhoto() {
+        return photo;
     }
 
-    public void setProfilePicture(Drawable profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }

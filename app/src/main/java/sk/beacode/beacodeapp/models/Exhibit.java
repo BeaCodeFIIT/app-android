@@ -1,8 +1,11 @@
 package sk.beacode.beacodeapp.models;
 
+import android.graphics.Bitmap;
+
 public class Exhibit {
     private String name;
     private String description;
+    private Bitmap photo;
 
     public String getName() {
         return name;
@@ -18,5 +21,13 @@ public class Exhibit {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }
