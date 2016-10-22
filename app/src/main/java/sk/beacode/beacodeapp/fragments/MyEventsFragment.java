@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +57,9 @@ public class MyEventsFragment extends Fragment {
 
     }
 
+    /**
+     * Defining view components
+     */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         //@ViewById(R.id.event_title)
@@ -88,6 +90,10 @@ public class MyEventsFragment extends Fragment {
         }
     }
 
+    /**
+     *  Every event is initialized and added to the list of events
+     * @return list of events, in which events are sorted by their start time
+     */
     private ArrayList<Event> initzializeEvents(){
 
         myEvents.clear();

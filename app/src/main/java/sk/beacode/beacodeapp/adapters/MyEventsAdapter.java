@@ -38,6 +38,11 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         return holder;
     }
 
+    /**
+     * binds event's data to the view
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final MyEventsFragment.MyViewHolder holder, int position) {
 
@@ -59,6 +64,11 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         holder.eventStartDate.setText(date);
         holder.eventImage.setImageDrawable((list.get(position).getPicture()));
     }
+
+    /**
+     *
+     * @return number of events
+     */
 
     @Override
     public int getItemCount() {
