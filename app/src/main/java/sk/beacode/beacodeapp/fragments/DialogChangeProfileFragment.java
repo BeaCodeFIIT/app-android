@@ -47,6 +47,11 @@ public class DialogChangeProfileFragment extends DialogFragment {
     @ViewById(R.id.gallery)
     Button gallery;
 
+    /**
+     *
+     * @param savedInstanceState
+     * @return an alert dialog that allows the user to change his profile picture
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -80,6 +85,12 @@ public class DialogChangeProfileFragment extends DialogFragment {
 
     }
 
+    /**
+     * The method enables picking an image from a camera or from a gallery
+     * @param requestCode
+     * @param resultCode
+     * @param imageReturnedIntent
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         Uri selectedImage = imageReturnedIntent.getData();

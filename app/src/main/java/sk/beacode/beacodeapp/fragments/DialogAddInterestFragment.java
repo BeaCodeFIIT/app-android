@@ -33,6 +33,12 @@ public class DialogAddInterestFragment extends DialogFragment{
 
     public static String newIntrestName = "";
 
+    /**
+     *
+     * @param savedInstanceState
+     * @return an alert dialog that allows the user to add new interest
+     */
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -62,6 +68,10 @@ public class DialogAddInterestFragment extends DialogFragment{
         newIntrestName = "";
     }
 
+    /**
+     * Method is called when the alert dialog fragment has been detached.
+     * In the method is defined adding tag in the list of tags and adding an interest in the user's list of interest
+     */
     @Override
     public void onDetach() {
 

@@ -50,6 +50,10 @@ public class MyProfileFragment extends Fragment {
     private boolean mIsCreated;
 
 
+    /**
+     * Method is called when the fragment has been attached
+     * @param activity
+     */
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (!mIsCreated){
@@ -58,6 +62,9 @@ public class MyProfileFragment extends Fragment {
         mIsCreated = true;
     }
 
+    /**
+     * Method is called when the fragment has been detached
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -73,6 +80,9 @@ public class MyProfileFragment extends Fragment {
         return null;
     }
 
+    /**
+     * Defining view components
+     */
     @AfterViews
     void initViews() {
         this.getView().setBackgroundColor(Color.WHITE);
@@ -83,6 +93,10 @@ public class MyProfileFragment extends Fragment {
 
     }
 
+    /**
+     *
+     * @return list of tags = list of interests
+     */
     public ArrayList<Tag> getTags(){
         tags = new ArrayList<>();
         for (int i = 0; i < user.getInterests().size(); i++){
@@ -93,6 +107,9 @@ public class MyProfileFragment extends Fragment {
         return tags;
     }
 
+    /**
+     * Adding listeners to some of the view components
+     */
     public void setListenerProperties(){
         profileImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -119,6 +136,13 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
+
+    /**
+     * After clicking the X icon on the tag, an alert dialog is shown
+     * @param view
+     * @param tag
+     * @param position
+     */
     public void alertDeleteInterestDialog(final TagView view, final Tag tag, final int position){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
@@ -148,6 +172,10 @@ public class MyProfileFragment extends Fragment {
 
     }
 
+    /**
+     * Defining tag attributes of every tag in the tag list
+     * @param myTag
+     */
     public void setTagAttributes(Tag myTag){
         myTag.deleteIndicatorColor = Color.GRAY;
         myTag.layoutColor = Color.WHITE;
@@ -158,6 +186,10 @@ public class MyProfileFragment extends Fragment {
         myTag.isDeletable = true;
     }
 
+    /**
+     * The User is initialized
+     * @return User object
+     */
     private User initzializeUser(){
         User user = new User();
         Interest interest1 = new Interest();
