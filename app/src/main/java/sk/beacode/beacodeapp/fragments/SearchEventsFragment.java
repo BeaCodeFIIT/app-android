@@ -1,9 +1,6 @@
 package sk.beacode.beacodeapp.fragments;
 
 import android.app.Fragment;
-import android.app.SearchManager;
-import android.app.usage.UsageEvents;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -75,7 +72,7 @@ public class SearchEventsFragment extends Fragment {
         List<Event> foundEvents = new ArrayList<>();
 
         for(Event e : events){
-            if(e.getName() != null && e.getName().contains(query)){
+            if(e.getName() != null && e.getName().toLowerCase().contains(query.toLowerCase())){
                 foundEvents.add(e);
             }
         }
