@@ -1,5 +1,6 @@
 package sk.beacode.beacodeapp.fragments;
 import android.app.Fragment;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -118,7 +119,7 @@ public class MyEventsFragment extends Fragment {
             event.setLocation(locations[i]);
             event.setStart(startTime[i].getTime());
             event.setEnd(endTime[i].getTime());
-            event.setPicture(getResources().getDrawable(images[i]));
+            event.setMainPhoto(BitmapFactory.decodeResource(getResources(), images[i]));
             event.setDescription(descriptions[i]);
             events.add(event);
 

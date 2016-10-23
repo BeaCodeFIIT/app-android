@@ -55,7 +55,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         holder.titleTextView.setText((list.get(position).getName()));
         holder.eventDescription.setText(list.get(position).getDescription());
         holder.eventStartDate.setText(date);
-        holder.eventImage.setImageDrawable((list.get(position).getPicture()));
+        holder.eventImage.setImageBitmap((list.get(position).getMainPhoto()));
     }
 
     /**
