@@ -12,4 +12,9 @@
     <string name="title_fragment_my_events">My Events</string>
     <string name="title_fragment_search_events">Search Events</string>
     <string name="title_fragment_my_profile">My Profile</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gallery"><b>Gallery</b></string>
+    <string name="camera"><b>Camera</b></string>
 </resources>
