@@ -1,30 +1,23 @@
 package sk.beacode.beacodeapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.models.Event;
 
-
-/**
- * Created by Sandra on 21.10.2016.
- */
-
 public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyViewHolder> {
 
-    private ArrayList<Event> list;
+    private List<Event> list;
 
-    public MyEventsAdapter(ArrayList<Event> Data) {
+    public MyEventsAdapter(List<Event> Data) {
         list = Data;
     }
 
@@ -46,15 +39,15 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
     @Override
     public void onBindViewHolder(final MyEventsFragment.MyViewHolder holder, int position) {
 
-        String stringMonth = (String) android.text.format.DateFormat.format("MMMM",list.get(position).getStart());
-        String day = (String) android.text.format.DateFormat.format("dd",list.get(position).getStart()); //20
+        String stringMonth = (String) DateFormat.format("MMMM", list.get(position).getStart());
+        String day = (String) DateFormat.format("dd", list.get(position).getStart()); //20
         Calendar cal = Calendar.getInstance();
-        String stringMonthToday = (String) android.text.format.DateFormat.format("MMMM",cal.getTime());
-        String dayToday = (String) android.text.format.DateFormat.format("dd",cal.getTime()); //20
+        String stringMonthToday = (String) DateFormat.format("MMMM", cal.getTime());
+        String dayToday = (String) DateFormat.format("dd", cal.getTime()); //20
         String date;
 
         if (stringMonth.equals(stringMonthToday) && day.equals(dayToday)){
-            date = "Today";
+            date = "Today"; // TODO: remove hardcoded string !
         } else {
             date = day + ". " + stringMonth;
         }
@@ -69,7 +62,6 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
      *
      * @return number of events
      */
-
     @Override
     public int getItemCount() {
         return list.size();

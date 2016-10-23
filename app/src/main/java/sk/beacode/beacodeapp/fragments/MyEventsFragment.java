@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,12 +27,12 @@ import sk.beacode.beacodeapp.models.Event;
 public class MyEventsFragment extends Fragment {
 
     RecyclerView MyRecyclerView;
-    ArrayList<Event> myEvents = new ArrayList<Event>();
+    ArrayList<Event> myEvents = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myEvents = initzializeEvents();
+        myEvents = initializeEvents();
     }
 
     @Override
@@ -94,7 +93,7 @@ public class MyEventsFragment extends Fragment {
      *  Every event is initialized and added to the list of events
      * @return list of events, in which events are sorted by their start time
      */
-    private ArrayList<Event> initzializeEvents(){
+    private ArrayList<Event> initializeEvents(){
 
         myEvents.clear();
         String titles[] = {"SLOVAK PRESS PHOTO 2016","BRATISLAVA IN MOVEMENT","EVENT"};
