@@ -49,6 +49,10 @@ public class HorizontalGalleryView extends HorizontalScrollView {
 
         layout.removeAllViews();
 
+        if (this.photos == null) {
+            return;
+        }
+
         for (int i = 0; i < this.photos.size(); ++i) {
             ImageView imageView = new ImageView(getContext());
             imageView.setId(i);
