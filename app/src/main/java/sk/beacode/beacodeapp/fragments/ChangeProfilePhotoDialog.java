@@ -62,13 +62,13 @@ public class ChangeProfilePhotoDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         try {
-            listener = (ChangeProfilePhotoDialog.ChangeProfilePhotoDialogListener) context;
+            listener = (ChangeProfilePhotoDialog.ChangeProfilePhotoDialogListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ChangeProfilePhotoDialogListener");
+            throw new ClassCastException(activity.toString() + " must implement ChangeProfilePhotoDialogListener");
         }
     }
 
