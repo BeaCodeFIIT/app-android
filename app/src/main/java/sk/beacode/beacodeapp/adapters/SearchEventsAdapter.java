@@ -16,27 +16,23 @@ import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.views.ResultItemView;
 import sk.beacode.beacodeapp.views.ResultItemView_;
 
-/**
- * Created by Veronika on 23.10.2016.
- */
-
 @EBean
-public class EventListAdapter extends BaseAdapter{
+public class SearchEventsAdapter extends BaseAdapter {
 
-        List<Event> event = new ArrayList<>();
+        private List<Event> events;
 
         @RootContext
         Context context;
 
         @AfterInject
         void initAdapter() {
-            event = new ArrayList<>();
+            events = new ArrayList<>();
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
             ResultItemView resultsItemView;
+
             if (convertView == null) {
                 resultsItemView = ResultItemView_.build(context);
             } else {
@@ -50,12 +46,12 @@ public class EventListAdapter extends BaseAdapter{
 
         @Override
         public int getCount() {
-            return event.size();
+            return events.size();
         }
 
         @Override
         public Event getItem(int position) {
-            return event.get(position);
+            return events.get(position);
         }
 
         @Override
@@ -63,8 +59,8 @@ public class EventListAdapter extends BaseAdapter{
             return position;
         }
 
-    public void setEvent(List<Event> event) {
-        this.event = event;
+    public void setEvents(List<Event> events) {
+        this.events = events;
         notifyDataSetChanged();
     }
 }

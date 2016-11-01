@@ -74,7 +74,7 @@ public class EventActivity extends AppCompatActivity {
             Palette.from(mainPhoto).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
-                    Palette.Swatch swatch = palette.getMutedSwatch();
+                    Palette.Swatch swatch = palette.getVibrantSwatch();
                     if (swatch != null) {
                         int appBarColor = swatch.getRgb();
 

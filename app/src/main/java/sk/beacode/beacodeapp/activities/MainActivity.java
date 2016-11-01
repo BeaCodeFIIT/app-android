@@ -1,5 +1,6 @@
 package sk.beacode.beacodeapp.activities;
 
+import android.app.DialogFragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,25 +18,34 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.fragments.AddInterestDialog;
+import sk.beacode.beacodeapp.fragments.ChangeProfilePhotoDialog;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment_;
 import sk.beacode.beacodeapp.fragments.MyProfileFragment;
 import sk.beacode.beacodeapp.fragments.MyProfileFragment_;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment_;
+import sk.beacode.beacodeapp.managers.EventManager;
+import sk.beacode.beacodeapp.managers.UserManager;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.models.Interest;
+import sk.beacode.beacodeapp.models.User;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        AddInterestDialog.AddInterestDialogListener,
+        ChangeProfilePhotoDialog.ChangeProfilePhotoDialogListener {
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
@@ -46,9 +56,17 @@ public class MainActivity extends AppCompatActivity
     @ViewById(R.id.nav_view)
     NavigationView navigationView;
 
+    @RestService
+    UserManager userManager;
+
+    @RestService
+    EventManager eventManager;
+
     MyEventsFragment myEventsFragment;
     SearchEventsFragment searchEventsFragment;
     MyProfileFragment myProfileFragment;
+
+    private User user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +75,33 @@ public class MainActivity extends AppCompatActivity
         myEventsFragment = new MyEventsFragment_();
         searchEventsFragment = new SearchEventsFragment_();
         myProfileFragment = new MyProfileFragment_();
+
+        // TODO
+        // user = userManager.getUserByName("aaa");
+        user = new User();
+
+        Interest interest1 = new Interest();
+        Interest interest2 = new Interest();
+        Interest interest3 = new Interest();
+        Interest interest4 = new Interest();
+        Interest interest5 = new Interest();
+        List<Interest> listOfInterests = new ArrayList<>();
+
+        interest1.setName("Cars");
+        listOfInterests.add(interest1);
+        interest2.setName("Technology");
+        listOfInterests.add(interest2);
+        interest3.setName("Computers");
+        listOfInterests.add(interest3);
+        interest4.setName("Nature");
+        listOfInterests.add(interest4);
+        interest5.setName("Food");
+        listOfInterests.add(interest5);
+
+        user.setName("Michal");
+        user.setSurname("Moravksy");
+        user.setInterests(listOfInterests);
+        user.setPhoto(BitmapFactory.decodeResource(getResources(), R.drawable.my_profile_picture));
     }
 
     @AfterViews
@@ -91,6 +136,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_my_events: {
+
+                // TODO
+                // List<Event> events = eventManager.getEvents();
 
                 Bitmap[] photos = {
                         BitmapFactory.decodeResource(getResources(), R.drawable.image),
@@ -143,6 +191,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_my_profile: {
+
+                myProfileFragment.bind(user);
+
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, myProfileFragment)
                         .commit();
@@ -152,5 +203,16 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onAddInterest(DialogFragment dialog, String interestName) {
+        Interest interest = new Interest().setName(interestName);
+        myProfileFragment.addInterest(interest);
+    }
+
+    @Override
+    public void onChangeProfilePhoto(DialogFragment dialog, Bitmap photo) {
+        myProfileFragment.setPhoto(photo);
     }
 }

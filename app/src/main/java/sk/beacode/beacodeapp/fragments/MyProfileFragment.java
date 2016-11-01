@@ -1,9 +1,10 @@
 package sk.beacode.beacodeapp.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,42 +35,20 @@ import sk.beacode.beacodeapp.models.User;
 public class MyProfileFragment extends Fragment {
 
     @ViewById(R.id.profile_picture)
-    static ImageView profileImageView;
+    ImageView profileImageView;
 
     @ViewById(R.id.user_name)
     TextView userNameView;
 
     @ViewById(R.id.tag_group)
-    static
-    TagView tagGroup = null;
+    TagView tagGroup;
 
     @ViewById(R.id.btn_add_interest)
     Button btnAddInterest;
 
-    public static User user;
-    public static ArrayList<Tag> tags = new ArrayList<>();
-    private boolean mIsCreated;
+    public User user;
 
-
-    /**
-     * Method is called when the fragment has been attached
-     * @param activity
-     */
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!mIsCreated){
-            user = initzializeUser();
-        }
-        mIsCreated = true;
-    }
-
-    /**
-     * Method is called when the fragment has been detached
-     */
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
+    public ArrayList<Tag> tags = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,35 +65,13 @@ public class MyProfileFragment extends Fragment {
      */
     @AfterViews
     void initViews() {
-        this.getView().setBackgroundColor(Color.WHITE);
-        setListenerProperties();
+        getView().setBackgroundColor(Color.WHITE);
         profileImageView.setImageBitmap(user.getPhoto());
         userNameView.setText(user.getName() + user.getSurname());
         tagGroup.addTags(getTags());
-
-    }
-
-    /**
-     *
-     * @return list of tags = list of interests
-     */
-    public ArrayList<Tag> getTags(){
-        tags = new ArrayList<>();
-        for (int i = 0; i < user.getInterests().size(); i++){
-            Tag myTag = new Tag(user.getInterests().get(i).getName());
-            tags.add(myTag);
-            setTagAttributes(tags.get(i));
-        }
-        return tags;
-    }
-
-    /**
-     * Adding listeners to some of the view components
-     */
-    public void setListenerProperties(){
         profileImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                DialogChangeProfileFragment dialog = new DialogChangeProfileFragment();
+                ChangeProfilePhotoDialog dialog = new ChangeProfilePhotoDialog();
                 dialog.setTargetFragment(MyProfileFragment.this,0);
                 dialog.show(getFragmentManager(),"DialogChangeProfile");
             }
@@ -130,13 +87,26 @@ public class MyProfileFragment extends Fragment {
 
         btnAddInterest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DialogAddInterestFragment dialog = new DialogAddInterestFragment();
+                AddInterestDialog dialog = new AddInterestDialog();
                 dialog.setTargetFragment(MyProfileFragment.this,0);
-                dialog.show(getFragmentManager(),"DialogAdd");
+                dialog.show(getFragmentManager(), "DialogAdd");
             }
         });
     }
 
+    /**
+     *
+     * @return list of tags = list of interests
+     */
+    public ArrayList<Tag> getTags(){
+        tags = new ArrayList<>();
+        for (int i = 0; i < user.getInterests().size(); i++){
+            Tag myTag = new Tag(user.getInterests().get(i).getName());
+            tags.add(myTag);
+            setTagAttributes(tags.get(i));
+        }
+        return tags;
+    }
 
     /**
      * After clicking the X icon on the tag, an alert dialog is shown
@@ -170,7 +140,6 @@ public class MyProfileFragment extends Fragment {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
     }
 
     /**
@@ -187,35 +156,26 @@ public class MyProfileFragment extends Fragment {
         myTag.isDeletable = true;
     }
 
-    /**
-     * The User is initialized
-     * @return User object
-     */
-    private User initzializeUser(){
-        User user = new User();
-        Interest interest1 = new Interest();
-        Interest interest2 = new Interest();
-        Interest interest3 = new Interest();
-        Interest interest4 = new Interest();
-        Interest interest5 = new Interest();
-        List<Interest> listOfInterests = new ArrayList<Interest>();
+    public void addInterest(Interest interest) {
+        user.getInterests().add(interest);
+        Tag myTag = new Tag(user.getInterests().get(user.getInterests().size() - 1).getName());
+        myTag.deleteIndicatorColor = Color.GRAY;
+        myTag.layoutColor = Color.WHITE;
+        myTag.layoutBorderSize = 1;
+        myTag.layoutBorderColor = Color.GRAY;
+        myTag.tagTextColor = Color.GRAY;
+        myTag.radius = 20;
+        myTag.isDeletable = true;
+        tagGroup.addTag(myTag);
+        tags.add(myTag);
+    }
 
-        interest1.setName("Cars");
-        listOfInterests.add(interest1);
-        interest2.setName("Technology");
-        listOfInterests.add(interest2);
-        interest3.setName("Computers");
-        listOfInterests.add(interest3);
-        interest4.setName("Nature");
-        listOfInterests.add(interest4);
-        interest5.setName("Food");
-        listOfInterests.add(interest5);
+    public void setPhoto(Bitmap photo) {
+        user.setPhoto(photo);
+        profileImageView.setImageBitmap(photo);
+    }
 
-        user.setName("Michal");
-        user.setSurname("Moravksy");
-        user.setInterests(listOfInterests);
-        user.setPhoto(BitmapFactory.decodeResource(getResources(), R.drawable.my_profile_picture));
-
-        return user;
+    public void bind(User user) {
+        this.user = user;
     }
 }

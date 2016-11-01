@@ -15,12 +15,13 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.adapters.EventListAdapter;
+import sk.beacode.beacodeapp.adapters.SearchEventsAdapter;
+import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
 
 @EFragment(R.layout.fragment_search_events)
@@ -35,50 +36,30 @@ public class SearchEventsFragment extends Fragment {
     @ViewById(R.id.ResultsView)
     ListView resultsView;
 
+    @Bean
+    SearchEventsAdapter adapter;
+
+    @RestService
+    EventManager eventManager;
+
     @AfterViews
     void initViews() {
+        resultsView.setAdapter(adapter);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                findEvent(query);
+                List<Event> results = eventManager.searchEventsByName(query);
+                bind(results);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                // TODO
                 return true;
             }
         });
-    }
-
-    @Bean
-    EventListAdapter adapter;
-
-    public List<Event> findEvent(String query){
-        Event event1 = new Event();
-        event1.setName("Autosalón Bratislava");
-
-        Event event2 = new Event();
-        event2.setName("Autosalón Expo");
-
-        Event event3 = new Event();
-        event3.setName("Výstavisko Incheba");
-
-        List<Event> events = new ArrayList<>();
-        events.add(event1);
-        events.add(event2);
-        events.add(event3);
-
-        List<Event> foundEvents = new ArrayList<>();
-
-        for(Event e : events){
-            if(e.getName() != null && e.getName().toLowerCase().contains(query.toLowerCase())){
-                foundEvents.add(e);
-            }
-        }
-
-        adapter.setEvent(foundEvents);
-        return foundEvents;
     }
 
     @Override
@@ -90,8 +71,7 @@ public class SearchEventsFragment extends Fragment {
         return null;
     }
 
-    @AfterViews
-    void bindAdapter() {
-        resultsView.setAdapter(adapter);
+    public void bind(List<Event> events) {
+        adapter.setEvents(events);
     }
 }
