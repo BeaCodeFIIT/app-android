@@ -89,7 +89,7 @@ public class SearchEventsFragment extends Fragment {
 
         System.out.println("OMG");
 
-        AddInterestDialog dialog = new AddInterestDialog();
+        DetailExhibitionDialog dialog = new DetailExhibitionDialog();
         dialog.setTargetFragment(SearchEventsFragment.this,0);
         dialog.show(getFragmentManager(), "DialogAdd");
 
