@@ -84,16 +84,6 @@ public class SearchEventsFragment extends Fragment {
         adapter.setEvents(events);
     }
 
-    @Click(R.id.buttonDetailXXX)
-    void DetailExhibition() {
-
-        System.out.println("OMG");
-
-        DetailExhibitionDialog dialog = new DetailExhibitionDialog();
-        dialog.setTargetFragment(SearchEventsFragment.this,0);
-        dialog.show(getFragmentManager(), "DialogAdd");
-
-    }
 
 
 }
