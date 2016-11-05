@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
@@ -33,6 +34,10 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     @ViewById(R.id.check_box)
     CheckBox checkBox;
 
+    private Exhibit exhibit;
+
+    private ExhibitListView.Listener listener;
+
     public ExhibitListItemView(Context context) {
         super(context);
     }
@@ -46,6 +51,7 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     }
 
     public void bind(Exhibit exhibit) {
+        this.exhibit = exhibit;
         photoView.setImageBitmap(exhibit.getPhoto());
         nameView.setText(exhibit.getName());
         descriptionView.setText(exhibit.getDescription());
@@ -66,9 +72,14 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
         checkBox.setChecked(!isChecked());
     }
 
-    public void setOnClickListener(OnClickListener l) {
-        photoView.setOnClickListener(l);
-        nameView.setOnClickListener(l);
-        descriptionView.setOnClickListener(l);
+    @Click({R.id.name, R.id.description, R.id.photo})
+    void onClick() {
+        if (listener != null) {
+            listener.onExhibitItemClick(this, exhibit);
+        }
+    }
+
+    public void setOnClickListener(ExhibitListView.Listener l) {
+        this.listener = l;
     }
 }

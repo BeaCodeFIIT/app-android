@@ -19,6 +19,8 @@ import org.androidannotations.annotations.ViewById;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.DetailExhibitionDialog;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.views.ExhibitListItemView;
 import sk.beacode.beacodeapp.views.ExhibitListView;
 import sk.beacode.beacodeapp.views.HorizontalGalleryView;
 
@@ -102,10 +104,11 @@ public class EventActivity extends AppCompatActivity {
                 // TODO
             }
         });
-        exhibitions.setExhibitOnClickListener(new View.OnClickListener() {
+        exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
             @Override
-            public void onClick(View view) {
+            public void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit) {
                 DetailExhibitionDialog dialog = new DetailExhibitionDialog();
+                dialog.bind(exhibit);
                 dialog.show(getFragmentManager(), "");
             }
         });

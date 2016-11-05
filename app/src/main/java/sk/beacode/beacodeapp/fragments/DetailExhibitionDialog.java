@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.EFragment;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.models.Exhibit;
 
 /**
  * Created by Veronika on 2.11.2016.
@@ -20,6 +23,7 @@ import sk.beacode.beacodeapp.R;
 @EFragment(R.layout.fragment_dialog_detail_exhibition)
 public class DetailExhibitionDialog extends DialogFragment {
 
+    private Exhibit exhibit;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -36,6 +40,15 @@ public class DetailExhibitionDialog extends DialogFragment {
             }
         });
 
+        if (exhibit != null) {
+            TextView name = (TextView) dialogView.findViewById(R.id.title_exibit);
+            name.setText(exhibit.getName());
+            TextView description = (TextView) dialogView.findViewById(R.id.detailExhibitionXXX);
+            description.setText(exhibit.getDescription());
+            ImageView photo = (ImageView) dialogView.findViewById(R.id.imageDetailExhibition);
+            photo.setImageBitmap(exhibit.getPhoto());
+        }
+
         return dialogBuilder.create();
     }
 
@@ -43,5 +56,9 @@ public class DetailExhibitionDialog extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+    }
+
+    public void bind(Exhibit exhibit) {
+        this.exhibit = exhibit;
     }
 }

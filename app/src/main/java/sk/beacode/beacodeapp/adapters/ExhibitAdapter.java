@@ -9,10 +9,11 @@ import android.widget.ArrayAdapter;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListItemView;
 import sk.beacode.beacodeapp.views.ExhibitListItemView_;
+import sk.beacode.beacodeapp.views.ExhibitListView;
 
 public class ExhibitAdapter extends ArrayAdapter<Exhibit> {
 
-    View.OnClickListener listener;
+    ExhibitListView.Listener listener;
 
     public ExhibitAdapter(Context context, int resource) {
         super(context, resource);
@@ -38,7 +39,7 @@ public class ExhibitAdapter extends ArrayAdapter<Exhibit> {
         return exhibitListItemView;
     }
 
-    public void setOnClickListener(View.OnClickListener l) {
+    public void setOnClickListener(ExhibitListView.Listener l) {
         this.listener = l;
     }
 }
