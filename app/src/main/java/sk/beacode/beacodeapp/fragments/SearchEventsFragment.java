@@ -1,6 +1,8 @@
 package sk.beacode.beacodeapp.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +10,14 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -27,6 +31,8 @@ import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.EventList;
 
+import static android.R.attr.tag;
+
 @EFragment(R.layout.fragment_search_events)
 public class SearchEventsFragment extends Fragment {
 
@@ -38,6 +44,9 @@ public class SearchEventsFragment extends Fragment {
 
     @ViewById(R.id.ResultsView)
     ListView resultsView;
+
+    @ViewById(R.id.buttonDetailXXX)
+    Button buttonDetail;
 
     @Bean
     SearchEventsAdapter adapter;

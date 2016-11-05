@@ -78,4 +78,8 @@ public class ExhibitListView extends LinearLayout {
     public void setStartTourListener(OnClickListener l) {
         startTourButton.setOnClickListener(l);
     }
+
+    public void setExhibitOnClickListener(OnClickListener l) {
+        this.adapter.setOnClickListener(l);
+    }
 }

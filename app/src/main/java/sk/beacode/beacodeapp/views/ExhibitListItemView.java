@@ -2,6 +2,7 @@ package sk.beacode.beacodeapp.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
@@ -12,6 +13,9 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.fragments.ChangeProfilePhotoDialog;
+import sk.beacode.beacodeapp.fragments.DetailExhibitionDialog;
+import sk.beacode.beacodeapp.fragments.MyProfileFragment;
 import sk.beacode.beacodeapp.models.Exhibit;
 
 @EViewGroup(R.layout.view_exhibit_list_item)
@@ -60,5 +64,11 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     @Override
     public void toggle() {
         checkBox.setChecked(!isChecked());
+    }
+
+    public void setOnClickListener(OnClickListener l) {
+        photoView.setOnClickListener(l);
+        nameView.setOnClickListener(l);
+        descriptionView.setOnClickListener(l);
     }
 }
