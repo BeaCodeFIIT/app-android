@@ -2,12 +2,19 @@ package sk.beacode.beacodeapp.models;
 
 import android.graphics.Bitmap;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
+    private int id;
     private String name;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:MM:SS")
     private Date start;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:MM:SS")
     private Date end;
     private String location;
     private String description;
@@ -77,5 +84,13 @@ public class Event {
 
     public void setPhotos(List<Bitmap> photos) {
         this.photos = photos;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -13,7 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,10 +30,19 @@ import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.activities.EventActivity;
 import sk.beacode.beacodeapp.activities.EventActivity_;
 import sk.beacode.beacodeapp.adapters.MyEventsAdapter;
+import sk.beacode.beacodeapp.managers.EventManager;
+import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.ExhibitList;
 
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
+
+    @RestService
+    EventManager eventManager;
+
+    @RestService
+    ExhibitManager exhibitManager;
 
     RecyclerView MyRecyclerView;
     List<Event> events = new ArrayList<>();
@@ -49,11 +62,9 @@ public class MyEventsFragment extends Fragment {
         LinearLayoutManager MyLayoutManager = new LinearLayoutManager(getActivity());
         MyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        if (events.size() > 0 & MyRecyclerView != null) {
-            MyRecyclerView.setAdapter(new MyEventsAdapter(events));
-        }
-
         MyRecyclerView.setLayoutManager(MyLayoutManager);
+
+        getEvents();
 
         return view;
     }
@@ -96,6 +107,22 @@ public class MyEventsFragment extends Fragment {
         public void bind(Event event) {
             this.event = event;
         }
+    }
+
+    @UiThread
+    void init() {
+        if (events.size() > 0 & MyRecyclerView != null) {
+            MyRecyclerView.setAdapter(new MyEventsAdapter(events));
+        }
+    }
+
+    @Background
+    void getEvents() {
+        events = eventManager.getEvents().getEvents();
+        for (Event e : events) {
+            e.setExhibitions(exhibitManager.getByEventId(e.getId()).getExhibits());
+        }
+        init();
     }
 
     public void bind(List<Event> events) {
