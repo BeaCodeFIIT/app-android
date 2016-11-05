@@ -2,7 +2,11 @@ package sk.beacode.beacodeapp.models;
 
 import android.graphics.Bitmap;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Exhibit {
+
     private String name;
     private String description;
     private Bitmap photo;

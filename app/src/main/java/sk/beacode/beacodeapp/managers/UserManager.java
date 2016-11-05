@@ -11,7 +11,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
 
-@Rest(rootUrl = "http://", converters = {StringHttpMessageConverter.class})
+@Rest(rootUrl = Manager.ROOT_URL, converters = {StringHttpMessageConverter.class})
 public interface UserManager {
     @Get("/users?name={name}")
     User getUserByName(@Path String name);

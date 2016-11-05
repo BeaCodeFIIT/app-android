@@ -12,8 +12,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
@@ -23,6 +25,7 @@ import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.adapters.SearchEventsAdapter;
 import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.EventList;
 
 @EFragment(R.layout.fragment_search_events)
 public class SearchEventsFragment extends Fragment {
@@ -42,6 +45,8 @@ public class SearchEventsFragment extends Fragment {
     @RestService
     EventManager eventManager;
 
+    List<Event> resultList;
+
     @AfterViews
     void initViews() {
         resultsView.setAdapter(adapter);
@@ -49,14 +54,13 @@ public class SearchEventsFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                List<Event> results = eventManager.searchEventsByName(query);
-                bind(results);
+                searchEvents(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // TODO
+                searchEvents(newText);
                 return true;
             }
         });
@@ -73,5 +77,16 @@ public class SearchEventsFragment extends Fragment {
 
     public void bind(List<Event> events) {
         adapter.setEvents(events);
+    }
+
+    @Background
+    public void searchEvents(String query) {
+        resultList = eventManager.getEventsByNamePart(query).getEvents();
+        showResults();
+    }
+
+    @UiThread
+    public void showResults() {
+        bind(resultList);
     }
 }

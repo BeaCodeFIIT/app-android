@@ -3,7 +3,7 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "sk.beacode.beacodeapp"
         minSdkVersion 19
@@ -24,6 +24,7 @@ android {
     packagingOptions {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/notice.txt'
+        exclude 'META-INF/LICENSE'
     }
 }
 
@@ -47,4 +48,7 @@ dependencies {
     compile 'org.androidannotations:androidannotations-api:4.1.0'
     apt "org.androidannotations:rest-spring:4.1.0"
     compile "org.androidannotations:rest-spring-api:4.1.0"
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.4'
 }

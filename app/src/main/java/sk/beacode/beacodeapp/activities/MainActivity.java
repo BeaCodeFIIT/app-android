@@ -137,47 +137,46 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.nav_my_events: {
 
-                // TODO
-                // List<Event> events = eventManager.getEvents();
+                //List<Event> events = eventManager.getEvents().getEvents();
 
-                Bitmap[] photos = {
-                        BitmapFactory.decodeResource(getResources(), R.drawable.image),
-                        BitmapFactory.decodeResource(getResources(), R.drawable.images),
-                };
+//                Bitmap[] photos = {
+//                        BitmapFactory.decodeResource(getResources(), R.drawable.image),
+//                        BitmapFactory.decodeResource(getResources(), R.drawable.images),
+//                };
+//
+//                List<Event> events = new ArrayList<>();
+//
+//                for (int i = 0; i < 4; ++i) {
+//                    Event e = new Event();
+//                    e.setName("Lorem ipsum");
+//                    e.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+//                    e.setStart(new GregorianCalendar(2016, 10, 30).getTime());
+//                    e.setEnd(new GregorianCalendar(2016, 10, 30).getTime());
+//                    e.setMainPhoto(photos[i % 2]);
+//
+//                    List<Bitmap> p = new ArrayList<>();
+//
+//                    for (int ii = 0; ii < 5; ++ii) {
+//                        p.add(photos[ii % 2]);
+//                    }
+//
+//                    e.setPhotos(p);
+//
+//                    List<Exhibit> exhibits = new ArrayList<>();
+//
+//                    for (int ii = 0;  ii < 3; ++ii) {
+//                        Exhibit ex = new Exhibit();
+//                        ex.setName("Lorem ipsum");
+//                        ex.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+//                        ex.setPhoto(photos[ii % 2]);
+//                        exhibits.add(ex);
+//                    }
+//
+//                    e.setExhibitions(exhibits);
+//                    events.add(e);
+//                }
 
-                List<Event> events = new ArrayList<>();
-
-                for (int i = 0; i < 4; ++i) {
-                    Event e = new Event();
-                    e.setName("Lorem ipsum");
-                    e.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-                    e.setStart(new GregorianCalendar(2016, 10, 30).getTime());
-                    e.setEnd(new GregorianCalendar(2016, 10, 30).getTime());
-                    e.setMainPhoto(photos[i % 2]);
-
-                    List<Bitmap> p = new ArrayList<>();
-
-                    for (int ii = 0; ii < 5; ++ii) {
-                        p.add(photos[ii % 2]);
-                    }
-
-                    e.setPhotos(p);
-
-                    List<Exhibit> exhibits = new ArrayList<>();
-
-                    for (int ii = 0;  ii < 3; ++ii) {
-                        Exhibit ex = new Exhibit();
-                        ex.setName("Lorem ipsum");
-                        ex.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-                        ex.setPhoto(photos[ii % 2]);
-                        exhibits.add(ex);
-                    }
-
-                    e.setExhibitions(exhibits);
-                    events.add(e);
-                }
-
-                myEventsFragment.bind(events);
+                //myEventsFragment.bind(events);
 
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, myEventsFragment)
