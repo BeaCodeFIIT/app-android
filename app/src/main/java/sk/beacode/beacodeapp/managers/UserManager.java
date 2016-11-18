@@ -17,8 +17,8 @@ import sk.beacode.beacodeapp.models.InterestList;
 @Accept(MediaType.APPLICATION_JSON)
 public interface UserManager {
 
-    @Get("/interests/show")
-    InterestList getInterests();
+//    @Get("/interests/show")
+//    InterestList getInterests();
 
 
 //    @Get("/users?name={name}")

@@ -14,9 +14,9 @@ import sk.beacode.beacodeapp.models.EventList;
 @Accept(MediaType.APPLICATION_JSON)
 public interface EventManager {
 
-    @Post("/events/show")
+    @Post("/events")
     EventList getEvents();
 
-    @Post("/events/show")
+    @Post("/events")
     EventList getEventsByNamePart(@Body String namePart);
 }

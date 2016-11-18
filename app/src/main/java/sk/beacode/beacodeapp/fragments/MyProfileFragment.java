@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.managers.InterestManager;
 import sk.beacode.beacodeapp.managers.UserManager;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
@@ -51,7 +52,7 @@ public class MyProfileFragment extends Fragment {
     Button btnAddInterest;
 
     @RestService
-    UserManager userManager;
+    InterestManager interestManager;
 
     public User user;
 
@@ -104,7 +105,7 @@ public class MyProfileFragment extends Fragment {
 
     @Background
     void getInterest(){
-        user.setInterests(userManager.getInterests().getInterests());
+        user.setInterests(interestManager.getInterests().getInterests());
     }
 
     /**

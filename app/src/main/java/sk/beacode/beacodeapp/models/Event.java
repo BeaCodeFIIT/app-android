@@ -12,11 +12,11 @@ import java.util.List;
 public class Event {
     private int id;
     private String name;
-    @JsonFormat(pattern = "dd.MM.yyyy HH:MM:SS")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:MM")
     private Date start;
-    @JsonFormat(pattern = "dd.MM.yyyy HH:MM:SS")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:MM")
     private Date end;
-    private String location;
+    private Location location;
     private String description;
     private Bitmap mainPhoto;
     private List<Bitmap> photos;
@@ -46,11 +46,11 @@ public class Event {
         this.end = end;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
