@@ -2,10 +2,8 @@ package sk.beacode.beacodeapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -21,13 +19,16 @@ import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.managers.InterestManager;
+import sk.beacode.beacodeapp.managers.UserManager;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
 
@@ -46,6 +47,12 @@ public class MyProfileFragment extends Fragment {
     @ViewById(R.id.btn_add_interest)
     Button btnAddInterest;
 
+    @RestService
+    InterestManager interestManager;
+
+    @RestService
+    UserManager userManager;
+
     public User user;
 
     public ArrayList<Tag> tags = new ArrayList<>();
@@ -56,7 +63,7 @@ public class MyProfileFragment extends Fragment {
         if (actionBar != null) {
             actionBar.setTitle(R.string.title_fragment_my_profile);
         }
-
+        getInterest();
         return null;
     }
 
@@ -65,9 +72,10 @@ public class MyProfileFragment extends Fragment {
      */
     @AfterViews
     void initViews() {
+        getInterest();
         getView().setBackgroundColor(Color.WHITE);
-        profileImageView.setImageBitmap(user.getPhoto());
-        userNameView.setText(user.getName() + user.getSurname());
+        profileImageView.setImageBitmap(user.getImage());
+        userNameView.setText(user.getFirstName() + " " + user.getLastName());
         tagGroup.addTags(getTags());
         profileImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -94,12 +102,18 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
+    @Background
+    void getInterest(){
+        user.setInterests(interestManager.getInterests().getInterests());
+    }
+
     /**
      *
      * @return list of tags = list of interests
      */
     public ArrayList<Tag> getTags(){
         tags = new ArrayList<>();
+        getInterest();
         for (int i = 0; i < user.getInterests().size(); i++){
             Tag myTag = new Tag(user.getInterests().get(i).getName());
             tags.add(myTag);
@@ -125,6 +139,7 @@ public class MyProfileFragment extends Fragment {
                     public void onClick(DialogInterface dialog,int id) {
                         for (int i = 0; i < tags.size(); i++){
                             if(tags.get(i) == tag){
+                                interestManager.deleteInterest(user.getInterests().get(i).getId());
                                 user.getInterests().remove(i);
                                 tags.remove(i);
                                 tagGroup.remove(position);

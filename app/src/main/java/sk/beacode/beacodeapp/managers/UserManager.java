@@ -1,27 +1,24 @@
 package sk.beacode.beacodeapp.managers;
 
-import org.androidannotations.rest.spring.annotations.Body;
-import org.androidannotations.rest.spring.annotations.Delete;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.androidannotations.rest.spring.annotations.Accept;
 import org.androidannotations.rest.spring.annotations.Get;
-import org.androidannotations.rest.spring.annotations.Path;
-import org.androidannotations.rest.spring.annotations.Post;
 import org.androidannotations.rest.spring.annotations.Rest;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.androidannotations.rest.spring.api.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import sk.beacode.beacodeapp.models.Interest;
+import java.util.List;
+
+import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.User;
+import sk.beacode.beacodeapp.models.UserList;
 
-@Rest(rootUrl = Manager.ROOT_URL, converters = {StringHttpMessageConverter.class})
+@Rest(rootUrl = Manager.API_ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
+@Accept(MediaType.APPLICATION_JSON)
 public interface UserManager {
-    @Get("/users?name={name}")
-    User getUserByName(@Path String name);
 
-    @Post("{userName}")
-    void addInterestByUserName(@Body Interest interest, @Path String userName);
+    @Get("/logged-in-user")
+    UserList getLoggedInUser();
 
-    @Delete("{userName}")
-    void deleteInterestByUserName(@Body Interest interest, @Path String userName);
-
-    @Post("{userName}")
-    void setPhotoByUserName(@Body Byte[] photo, @Path String userName);
 }

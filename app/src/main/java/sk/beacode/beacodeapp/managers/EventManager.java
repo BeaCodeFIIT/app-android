@@ -2,25 +2,19 @@ package sk.beacode.beacodeapp.managers;
 
 import org.androidannotations.rest.spring.annotations.Accept;
 import org.androidannotations.rest.spring.annotations.Body;
-import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Post;
 import org.androidannotations.rest.spring.annotations.Rest;
 import org.androidannotations.rest.spring.api.MediaType;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import java.util.List;
-
-import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.EventList;
 
-@Rest(rootUrl = Manager.ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
+@Rest(rootUrl = Manager.API_ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
 @Accept(MediaType.APPLICATION_JSON)
 public interface EventManager {
 
-    @Post("/events/show")
+    @Post("/events")
     EventList getEvents();
 
-    @Post("/events/show")
+    @Post("/events")
     EventList getEventsByNamePart(@Body String namePart);
 }

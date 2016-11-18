@@ -1,6 +1,10 @@
 package sk.beacode.beacodeapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Interest {
+    private int id;
     private String name;
 
     public String getName() {
@@ -11,4 +15,12 @@ public class Interest {
         this.name = name;
         return this;
     }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }
