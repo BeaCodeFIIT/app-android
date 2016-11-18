@@ -4,29 +4,32 @@ import android.graphics.Bitmap;
 
 import java.util.List;
 
+
 public class User {
-    private String name;
-    private String surname;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private Image image;
     private String password;
     private String salt;
     private String roles;
     private Bitmap photo;
     private List<Interest> interests;
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPassword() {
@@ -68,4 +71,20 @@ public class User {
     public void setPhoto(Bitmap photo) {
         this.photo = photo;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Bitmap getImage() {
+        if (image == null) {
+            return null;
+        }
+        return image.getBitmap();
+    }
+
 }

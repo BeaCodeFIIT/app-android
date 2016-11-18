@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EBean;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -55,7 +58,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         holder.titleTextView.setText((list.get(position).getName()));
         holder.eventDescription.setText(list.get(position).getDescription());
         holder.eventStartDate.setText(date);
-        holder.eventImage.setImageBitmap((list.get(position).getMainPhoto()));
+        holder.eventImage.setImageBitmap((list.get(position).getMainImage()));
 
         holder.bind(list.get(position));
     }

@@ -9,7 +9,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 import sk.beacode.beacodeapp.models.ExhibitList;
 
-@Rest(rootUrl = Manager.ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
+@Rest(rootUrl = Manager.API_ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
 @Accept(MediaType.APPLICATION_JSON)
 public interface ExhibitManager {
 

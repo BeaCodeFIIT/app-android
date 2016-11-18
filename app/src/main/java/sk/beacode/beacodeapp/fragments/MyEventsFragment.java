@@ -132,6 +132,8 @@ public class MyEventsFragment extends Fragment {
     void getEvents() {
         events = eventManager.getEvents().getEvents();
         for (Event e : events) {
+            e.getMainImage();
+            e.getImages();
             e.setExhibitions(exhibitManager.getByEventId(e.getId()).getExhibits());
         }
         init();

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import org.androidannotations.annotations.EBean;
+
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListItemView;
 import sk.beacode.beacodeapp.views.ExhibitListItemView_;

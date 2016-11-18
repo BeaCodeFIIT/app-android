@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
@@ -58,6 +59,8 @@ public class EventActivity extends AppCompatActivity {
 
     @AfterViews
     void initViews() {
+        setPhotos();
+
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -71,7 +74,28 @@ public class EventActivity extends AppCompatActivity {
 
         collapsingToolbar.setTitle(event.getName());
 
-        Bitmap mainPhoto = event.getMainPhoto();
+        descriptionView.setText(event.getDescription());
+
+        exhibitions.bind(event.getExhibitions());
+        exhibitions.setStartTourListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO
+            }
+        });
+        exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
+            @Override
+            public void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit) {
+                DetailExhibitionDialog dialog = new DetailExhibitionDialog();
+                dialog.bind(exhibit);
+                dialog.show(getFragmentManager(), "");
+            }
+        });
+    }
+
+    @Background
+    void setPhotos() {
+        Bitmap mainPhoto = event.getMainImage();
         if (mainPhoto != null && !mainPhoto.isRecycled()) {
             mainPhotoView.setImageBitmap(mainPhoto);
             Palette.from(mainPhoto).generate(new Palette.PaletteAsyncListener() {
@@ -93,24 +117,7 @@ public class EventActivity extends AppCompatActivity {
             });
         }
 
-        descriptionView.setText(event.getDescription());
-
-        gallery.bind(event.getPhotos());
-
-        exhibitions.bind(event.getExhibitions());
-        exhibitions.setStartTourListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO
-            }
-        });
-        exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
-            @Override
-            public void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit) {
-                DetailExhibitionDialog dialog = new DetailExhibitionDialog();
-                dialog.bind(exhibit);
-                dialog.show(getFragmentManager(), "");
-            }
-        });
+        gallery.bind(event.getImages());
     }
+
 }
