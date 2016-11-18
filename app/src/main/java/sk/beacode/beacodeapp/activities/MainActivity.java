@@ -80,27 +80,27 @@ public class MainActivity extends AppCompatActivity
         // user = userManager.getUserByName("aaa");
         user = new User();
 
-        Interest interest1 = new Interest();
-        Interest interest2 = new Interest();
-        Interest interest3 = new Interest();
-        Interest interest4 = new Interest();
-        Interest interest5 = new Interest();
-        List<Interest> listOfInterests = new ArrayList<>();
-
-        interest1.setName("Cars");
-        listOfInterests.add(interest1);
-        interest2.setName("Technology");
-        listOfInterests.add(interest2);
-        interest3.setName("Computers");
-        listOfInterests.add(interest3);
-        interest4.setName("Nature");
-        listOfInterests.add(interest4);
-        interest5.setName("Food");
-        listOfInterests.add(interest5);
+//        Interest interest1 = new Interest();
+//        Interest interest2 = new Interest();
+//        Interest interest3 = new Interest();
+//        Interest interest4 = new Interest();
+//        Interest interest5 = new Interest();
+//        List<Interest> listOfInterests = new ArrayList<>();
+//
+//        interest1.setName("Cars");
+//        listOfInterests.add(interest1);
+//        interest2.setName("Technology");
+//        listOfInterests.add(interest2);
+//        interest3.setName("Computers");
+//        listOfInterests.add(interest3);
+//        interest4.setName("Nature");
+//        listOfInterests.add(interest4);
+//        interest5.setName("Food");
+//        listOfInterests.add(interest5);
 
         user.setName("Michal");
         user.setSurname("Moravksy");
-        user.setInterests(listOfInterests);
+//        user.setInterests(listOfInterests);
         user.setPhoto(BitmapFactory.decodeResource(getResources(), R.drawable.my_profile_picture));
     }
 

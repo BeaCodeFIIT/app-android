@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,16 @@ import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.managers.UserManager;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
 
@@ -46,6 +50,9 @@ public class MyProfileFragment extends Fragment {
     @ViewById(R.id.btn_add_interest)
     Button btnAddInterest;
 
+    @RestService
+    UserManager userManager;
+
     public User user;
 
     public ArrayList<Tag> tags = new ArrayList<>();
@@ -56,7 +63,7 @@ public class MyProfileFragment extends Fragment {
         if (actionBar != null) {
             actionBar.setTitle(R.string.title_fragment_my_profile);
         }
-
+        getInterest();
         return null;
     }
 
@@ -65,6 +72,7 @@ public class MyProfileFragment extends Fragment {
      */
     @AfterViews
     void initViews() {
+        getInterest();
         getView().setBackgroundColor(Color.WHITE);
         profileImageView.setImageBitmap(user.getPhoto());
         userNameView.setText(user.getName() + user.getSurname());
@@ -94,12 +102,18 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
+    @Background
+    void getInterest(){
+        user.setInterests(userManager.getInterests().getInterests());
+    }
+
     /**
      *
      * @return list of tags = list of interests
      */
     public ArrayList<Tag> getTags(){
         tags = new ArrayList<>();
+        getInterest();
         for (int i = 0; i < user.getInterests().size(); i++){
             Tag myTag = new Tag(user.getInterests().get(i).getName());
             tags.add(myTag);

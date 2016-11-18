@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.rest.spring.annotations.RestService;
@@ -33,10 +34,16 @@ import sk.beacode.beacodeapp.adapters.MyEventsAdapter;
 import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.ExhibitList;
+import sk.beacode.beacodeapp.views.ExhibitListItemView;
 
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
+
+    public interface Listener {
+        void onEventItemClick(View view, Event event);
+    }
 
     @RestService
     EventManager eventManager;
@@ -72,7 +79,7 @@ public class MyEventsFragment extends Fragment {
     /**
      * Defining view components
      */
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //@ViewById(R.id.event_title)
         public TextView titleTextView;
@@ -94,18 +101,23 @@ public class MyEventsFragment extends Fragment {
             eventDescription = (TextView) v.findViewById(R.id.event_description);
             eventStartDate = (TextView) v.findViewById(R.id.event_date);
             eventImage = (ImageView) v.findViewById(R.id.event_image);
-            titleTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventActivity.setEvent(event);
-                    Intent intent = new Intent(v.getContext(), EventActivity_.class);
-                    v.getContext().startActivity(intent);
-                }
-            });
+            titleTextView.setOnClickListener(this);
+            eventDescription.setOnClickListener(this);
+            eventStartDate.setOnClickListener(this);
+            eventImage.setOnClickListener(this);
+
         }
+
 
         public void bind(Event event) {
             this.event = event;
+        }
+
+        @Override
+        public void onClick(View v) {
+            EventActivity.setEvent(event);
+            Intent intent = new Intent(v.getContext(), EventActivity_.class);
+            v.getContext().startActivity(intent);
         }
     }
 

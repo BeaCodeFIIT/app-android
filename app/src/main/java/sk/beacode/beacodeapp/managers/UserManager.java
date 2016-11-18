@@ -1,27 +1,35 @@
 package sk.beacode.beacodeapp.managers;
 
+import org.androidannotations.rest.spring.annotations.Accept;
 import org.androidannotations.rest.spring.annotations.Body;
 import org.androidannotations.rest.spring.annotations.Delete;
 import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Post;
 import org.androidannotations.rest.spring.annotations.Rest;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.androidannotations.rest.spring.api.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import sk.beacode.beacodeapp.models.Interest;
-import sk.beacode.beacodeapp.models.User;
+import java.util.List;
+import sk.beacode.beacodeapp.models.InterestList;
 
-@Rest(rootUrl = Manager.ROOT_URL, converters = {StringHttpMessageConverter.class})
+@Rest(rootUrl = Manager.ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
+@Accept(MediaType.APPLICATION_JSON)
 public interface UserManager {
-    @Get("/users?name={name}")
-    User getUserByName(@Path String name);
 
-    @Post("{userName}")
-    void addInterestByUserName(@Body Interest interest, @Path String userName);
+    @Get("/interests/show")
+    InterestList getInterests();
 
-    @Delete("{userName}")
-    void deleteInterestByUserName(@Body Interest interest, @Path String userName);
 
-    @Post("{userName}")
-    void setPhotoByUserName(@Body Byte[] photo, @Path String userName);
+//    @Get("/users?name={name}")
+//    User getUserByName(@Path String name);
+//
+//    @Post("{userName}")
+//    void addInterestByUserName(@Body Interest interest, @Path String userName);
+//
+//    @Delete("{userName}")
+//    void deleteInterestByUserName(@Body Interest interest, @Path String userName);
+//
+//    @Post("{userName}")
+//    void setPhotoByUserName(@Body Byte[] photo, @Path String userName);
 }
