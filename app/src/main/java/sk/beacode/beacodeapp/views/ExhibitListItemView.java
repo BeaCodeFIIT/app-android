@@ -12,11 +12,13 @@ import android.widget.TextView;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.ChangeProfilePhotoDialog;
 import sk.beacode.beacodeapp.fragments.DetailExhibitionDialog;
 import sk.beacode.beacodeapp.fragments.MyProfileFragment;
+import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Exhibit;
 
 @EViewGroup(R.layout.view_exhibit_list_item)
@@ -38,6 +40,9 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
 
     private ExhibitListView.Listener listener;
 
+    @RestService
+    ExhibitManager exhibitManager;
+
     public ExhibitListItemView(Context context) {
         super(context);
     }
@@ -52,7 +57,7 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
 
     public void bind(Exhibit exhibit) {
         this.exhibit = exhibit;
-        photoView.setImageBitmap(exhibit.getPhoto());
+        photoView.setImageBitmap(exhibit.getMainImage());
         nameView.setText(exhibit.getName());
         descriptionView.setText(exhibit.getDescription());
     }

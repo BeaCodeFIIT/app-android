@@ -93,6 +93,13 @@ public class MyProfileFragment extends Fragment {
             }
         });
 
+        tagGroup.setOnTagLongClickListener(new TagView.OnTagLongClickListener() {
+            @Override
+            public void onTagLongClick(Tag tag, int position) {
+                alertDeleteInterestDialog(null,tag,position);
+            }
+        });;
+
         btnAddInterest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 AddInterestDialog dialog = new AddInterestDialog();
@@ -155,6 +162,8 @@ public class MyProfileFragment extends Fragment {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     /**

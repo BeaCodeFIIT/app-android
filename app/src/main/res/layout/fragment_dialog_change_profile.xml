@@ -2,7 +2,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="36dp"
+    android:layout_marginTop="34dp"
     android:layout_marginStart="15dp"
     android:layout_marginEnd="15dp"
     android:weightSum="1">
@@ -10,7 +10,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="55dp"
         android:gravity="center"
         android:text="Choose Picture"
         android:textSize="12pt"
@@ -20,6 +20,7 @@
 
     <TextView
         android:id="@+id/camera"
+        android:layout_marginStart="18dp"
         android:drawableLeft="@android:drawable/ic_menu_camera"
         android:gravity="center_vertical"
         android:textStyle="bold"
@@ -28,9 +29,9 @@
         android:inputType="text"
         android:drawablePadding="18dp"
         android:textSize="50px"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="@string/camera" />
 
     <TextView
@@ -43,6 +44,7 @@
 
     <TextView
         android:id="@+id/gallery"
+        android:layout_marginStart="18dp"
         android:drawableLeft="@android:drawable/ic_menu_gallery"
         android:gravity="center_vertical"
         android:textStyle="bold"
@@ -51,9 +53,9 @@
         android:inputType="text"
         android:drawablePadding="18dp"
         android:textSize="50px"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="@string/gallery" />
 
 
