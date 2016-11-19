@@ -93,7 +93,6 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
-    @Background
     void setPhotos() {
         Bitmap mainPhoto = event.getMainImage();
         if (mainPhoto != null && !mainPhoto.isRecycled()) {

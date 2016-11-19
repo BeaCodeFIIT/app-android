@@ -54,7 +54,9 @@ public class ExhibitListView extends LinearLayout {
     }
 
     public void bind(List<Exhibit> exhibitions) {
-        adapter.addAll(exhibitions);
+        if (exhibitions != null) {
+            adapter.addAll(exhibitions);
+        }
     }
 
     @Click(R.id.select_all_exhibits)
