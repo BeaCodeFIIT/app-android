@@ -41,10 +41,6 @@ import sk.beacode.beacodeapp.views.ExhibitListItemView;
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
 
-    public interface Listener {
-        void onEventItemClick(View view, Event event);
-    }
-
     @RestService
     EventManager eventManager;
 
@@ -105,6 +101,7 @@ public class MyEventsFragment extends Fragment {
             eventDescription.setOnClickListener(this);
             eventStartDate.setOnClickListener(this);
             eventImage.setOnClickListener(this);
+            v.setOnClickListener(this);
 
         }
 

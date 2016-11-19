@@ -46,7 +46,7 @@ public class DetailExhibitionDialog extends DialogFragment {
             TextView description = (TextView) dialogView.findViewById(R.id.detailExhibitionXXX);
             description.setText(exhibit.getDescription());
             ImageView photo = (ImageView) dialogView.findViewById(R.id.imageDetailExhibition);
-            photo.setImageBitmap(exhibit.getPhoto());
+            photo.setImageBitmap(exhibit.getMainImage());
         }
 
         return dialogBuilder.create();
