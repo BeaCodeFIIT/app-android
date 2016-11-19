@@ -1,52 +1,46 @@
 package sk.beacode.beacodeapp.fragments;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.activities.EventActivity;
+import sk.beacode.beacodeapp.activities.EventActivity_;
 import sk.beacode.beacodeapp.adapters.SearchEventsAdapter;
 import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
-import sk.beacode.beacodeapp.models.EventList;
-
-import static android.R.attr.tag;
+import sk.beacode.beacodeapp.models.EventQuery;
+import sk.beacode.beacodeapp.views.RecentItemView;
 
 @EFragment(R.layout.fragment_search_events)
 public class SearchEventsFragment extends Fragment {
 
-    @ViewById(R.id.SearchBox)
-    SearchView searchView;
+    @ViewById(R.id.search_view)
+    FloatingSearchView searchView;
 
-    @ViewById(R.id.Results)
-    TextView results;
-
-    @ViewById(R.id.ResultsView)
-    ListView resultsView;
-
-    @ViewById(R.id.buttonDetailXXX)
-    Button buttonDetail;
+    @ViewById(R.id.recently_search_list)
+    ListView recentView;
 
     @Bean
     SearchEventsAdapter adapter;
@@ -54,23 +48,43 @@ public class SearchEventsFragment extends Fragment {
     @RestService
     EventManager eventManager;
 
-    List<Event> resultList;
+    private List<Event> lastResults;
+    private List<Event> recentResults = new ArrayList<>();
 
     @AfterViews
     void initViews() {
-        resultsView.setAdapter(adapter);
+        adapter.setEvents(recentResults);
+        recentView.setAdapter(adapter);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        adapter.setOnClickListener(new RecentItemView.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchEvents(query);
-                return true;
+            public void onClick(RecentItemView view, Event event) {
+                EventActivity.setEvent(event);
+                Intent intent = new Intent(getActivity(), EventActivity_.class);
+                startActivity(intent);
+            }
+        });
+
+        searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, final String newQuery) {
+                searchEvents(newQuery);
+            }
+        });
+
+        searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                recentResults.add((Event) searchSuggestion);
+                adapter.setEvents(recentResults);
+                EventActivity.setEvent((Event) searchSuggestion);
+                Intent intent = new Intent(getActivity(), EventActivity_.class);
+                startActivity(intent);
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                searchEvents(newText);
-                return true;
+            public void onSearchAction(String currentQuery) {
+                searchEvents(currentQuery);
             }
         });
     }
@@ -84,18 +98,16 @@ public class SearchEventsFragment extends Fragment {
         return null;
     }
 
-    public void bind(List<Event> events) {
-        adapter.setEvents(events);
-    }
-
     @Background
     public void searchEvents(String query) {
-        resultList = eventManager.getEventsByNamePart(query).getEvents();
+        lastResults = eventManager.getEventsByNamePart(new EventQuery(query)).getEvents();
         showResults();
     }
 
     @UiThread
     public void showResults() {
-        bind(resultList);
+        if (lastResults != null) {
+            searchView.swapSuggestions(lastResults);
+        }
     }
 }

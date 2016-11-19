@@ -2,7 +2,9 @@ package sk.beacode.beacodeapp.models;
 
 import android.graphics.Bitmap;
 import android.media.*;
+import android.os.Parcel;
 
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -13,7 +15,7 @@ import java.util.List;
 import static android.media.CamcorderProfile.get;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event {
+public class Event implements SearchSuggestion {
     private int id;
     private String name;
     @JsonFormat(pattern = "dd.MM.yyyy HH:MM")
@@ -96,5 +98,20 @@ public class Event {
             return null;
         }
         return images.get(0).getBitmap();
+    }
+
+    @Override
+    public String getBody() {
+        return name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 }

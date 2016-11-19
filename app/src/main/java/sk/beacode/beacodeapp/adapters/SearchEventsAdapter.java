@@ -13,54 +13,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.models.Event;
-import sk.beacode.beacodeapp.views.ResultItemView;
-import sk.beacode.beacodeapp.views.ResultItemView_;
+import sk.beacode.beacodeapp.views.RecentItemView;
+import sk.beacode.beacodeapp.views.RecentItemView_;
 
 @EBean
 public class SearchEventsAdapter extends BaseAdapter {
 
-        private List<Event> events;
+    @RootContext
+    Context context;
 
-        @RootContext
-        Context context;
+    private RecentItemView.OnClickListener listener;
 
-        @AfterInject
-        void initAdapter() {
+    private List<Event> events;
+
+    @AfterInject
+    void initAdapter() {
             events = new ArrayList<>();
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ResultItemView resultsItemView;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        RecentItemView resultsItemView;
 
-            if (convertView == null) {
-                resultsItemView = ResultItemView_.build(context);
-            } else {
-                resultsItemView = (ResultItemView) convertView;
-            }
-
-            resultsItemView.bind(getItem(position));
-
-            return resultsItemView;
+        if (convertView == null) {
+            resultsItemView = RecentItemView_.build(context);
+        } else {
+            resultsItemView = (RecentItemView) convertView;
         }
 
-        @Override
-        public int getCount() {
-            return events.size();
+        resultsItemView.bind(getItem(position));
+        if (listener != null) {
+            resultsItemView.setOnClickListener(listener);
         }
 
-        @Override
-        public Event getItem(int position) {
-            return events.get(position);
-        }
+        return resultsItemView;
+    }
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
+    @Override
+    public int getCount() {
+        return events.size();
+    }
+
+    @Override
+    public Event getItem(int position) {
+        return events.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     public void setEvents(List<Event> events) {
         this.events = events;
         notifyDataSetChanged();
+    }
+
+    public void setOnClickListener(RecentItemView.OnClickListener l) {
+        listener = l;
     }
 }

@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.SearchView
-            android:id="@+id/SearchBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
         <TextView
-            android:id="@+id/Results"
-            android:text="Results:"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <ListView
-            android:id="@+id/ResultsView"
-            android:layout_width="match_parent"
-            android:layout_height="370dp" />
-
-        <Button
-            android:text="Button"
+            android:id="@+id/recently_searched"
+            android:text="Recent search:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonDetailXXX" />
+            android:paddingTop="60dp"
+            android:textSize="9pt"
+            />
 
-    </LinearLayout>
+        <ListView
+            android:id="@+id/recently_search_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/recently_searched"
+            android:clipToPadding="false"/>
+
+        <com.arlib.floatingsearchview.FloatingSearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:floatingSearch_searchBarMarginLeft="10dp"
+            app:floatingSearch_searchBarMarginTop="10dp"
+            app:floatingSearch_searchBarMarginRight="10dp"
+            app:floatingSearch_searchHint="Search..."
+            app:floatingSearch_suggestionsListAnimDuration="250"
+            app:floatingSearch_showSearchKey="false"
+            app:floatingSearch_leftActionMode="showSearch"
+            app:floatingSearch_close_search_on_keyboard_dismiss="true" />
+
+    </RelativeLayout>
 </LinearLayout>
 
 
