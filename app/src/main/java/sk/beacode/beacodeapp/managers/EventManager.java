@@ -12,7 +12,6 @@ import sk.beacode.beacodeapp.models.EventQuery;
 @Rest(rootUrl = Manager.API_ROOT_URL, converters = {MappingJackson2HttpMessageConverter.class})
 @Accept(MediaType.APPLICATION_JSON)
 public interface EventManager {
-
     @Post("/events")
     EventList getEvents();
 

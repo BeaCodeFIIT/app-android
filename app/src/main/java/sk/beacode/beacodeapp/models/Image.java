@@ -42,4 +42,8 @@ public class Image {
             return null;
         }
     }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 }

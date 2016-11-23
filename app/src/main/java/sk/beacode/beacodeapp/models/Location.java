@@ -1,10 +1,8 @@
 package sk.beacode.beacodeapp.models;
 
-/**
- * Created by Sandra on 18.11.2016.
- */
+import java.io.Serializable;
 
-public class Location {
+public class Location implements Serializable {
     private int id;
     private String name;
     private double latitude;

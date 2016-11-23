@@ -2,7 +2,6 @@ package sk.beacode.beacodeapp.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
@@ -15,9 +14,6 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.fragments.ChangeProfilePhotoDialog;
-import sk.beacode.beacodeapp.fragments.DetailExhibitionDialog;
-import sk.beacode.beacodeapp.fragments.MyProfileFragment;
 import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Exhibit;
 

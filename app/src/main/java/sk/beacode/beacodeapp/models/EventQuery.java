@@ -1,7 +1,6 @@
 package sk.beacode.beacodeapp.models;
 
 public class EventQuery {
-
     private String namePart;
 
     public EventQuery(String namePart) {

@@ -1,8 +1,8 @@
 package sk.beacode.beacodeapp.activities;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -15,15 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
+import java.util.List;
+
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.fragments.AddInterestDialog;
-import sk.beacode.beacodeapp.fragments.ChangeProfilePhotoDialog;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment_;
 import sk.beacode.beacodeapp.fragments.MyProfileFragment;
@@ -31,17 +32,20 @@ import sk.beacode.beacodeapp.fragments.MyProfileFragment_;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment_;
 import sk.beacode.beacodeapp.managers.EventManager;
+import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.managers.InterestManager;
 import sk.beacode.beacodeapp.managers.UserManager;
+import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        AddInterestDialog.AddInterestDialogListener,
-        ChangeProfilePhotoDialog.ChangeProfilePhotoDialogListener {
+        implements MyProfileFragment.ProfileListener,
+        SearchEventsFragment.SearchEventsListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
 
     @ViewById(R.id.nav_view)
-    NavigationView navigationView;
+    NavigationView navigation;
 
     @RestService
     UserManager userManager;
@@ -60,6 +64,9 @@ public class MainActivity extends AppCompatActivity
 
     @RestService
     InterestManager interestManager;
+
+    @RestService
+    ExhibitManager exhibitManager;
 
     MyEventsFragment myEventsFragment;
     SearchEventsFragment searchEventsFragment;
@@ -71,14 +78,13 @@ public class MainActivity extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         myEventsFragment = new MyEventsFragment_();
-        searchEventsFragment = new SearchEventsFragment_();
-        myProfileFragment = new MyProfileFragment_();
 
-        user = userManager.getLoggedInUser().getUser();
+        searchEventsFragment = new SearchEventsFragment_();
+        searchEventsFragment.setSearchEventsListener(this);
+
+        myProfileFragment = new MyProfileFragment_();
+        myProfileFragment.setProfileListener(this);
     }
 
     @AfterViews
@@ -90,9 +96,12 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().performIdentifierAction(R.id.nav_my_events, 0);
-        navigationView.getMenu().getItem(0).setChecked(true);
+        navigation.setNavigationItemSelectedListener(this);
+        navigation.getMenu().performIdentifierAction(R.id.nav_my_events, 0);
+        navigation.getMenu().getItem(0).setChecked(true);
+
+        getUser();
+        getEvents();
     }
 
     @Override
@@ -125,9 +134,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_my_profile: {
-
-                myProfileFragment.bind(user);
-
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, myProfileFragment)
                         .commit();
@@ -139,15 +145,99 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Background
+    void getEvents() {
+        List<Event> events = eventManager.getEvents().getEvents();
+
+        for (Event e : events) {
+            e.getMainImage();
+            e.getImages();
+            e.setExhibits(exhibitManager.getExhibitsByEventId(e.getId()).getExhibits());
+        }
+
+        myEventsFragment.bind(events);
+    }
+
+    @Background
+    void getUser() {
+        user = userManager.getLoggedInUser();
+        user.getImage().getBitmap();
+        user.setInterests(interestManager.getInterests().getInterests());
+        myProfileFragment.bind(user);
+    }
+
     @Override
-    public void onAddInterest(DialogFragment dialog, String interestName) {
-        Interest interest = new Interest().setName(interestName);
-        myProfileFragment.addInterest(interest);
+    public void onChangeUserName(String firstName, String lastName) {
+        if (user != null) {
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            myProfileFragment.bind(user);
+            onChangeUserNameBackground(firstName, lastName);
+        }
+    }
+
+    @Background
+    void onChangeUserNameBackground(String firstName, String lastName) {
+        // TODO
+    }
+
+    @Override
+    public void onChangeUserPicture(Bitmap picture) {
+        if (user != null) {
+            if (user.getImage() == null) {
+                user.setImage(new Image());
+            }
+            user.getImage().setBitmap(picture);
+            myProfileFragment.bind(user);
+            onChangeUserPictureBackground(picture);
+        }
+    }
+
+    @Background
+    void onChangeUserPictureBackground(Bitmap picture) {
+        // TODO
+    }
+
+    @Override
+    public void onAddInterest(Interest interest) {
+        if (user != null) {
+            if (user.getInterests() != null) {
+                user.getInterests().add(interest);
+            }
+            myProfileFragment.bind(user);
+            onAddInterestBackground(interest);
+        }
+    }
+
+    @Background
+    void onAddInterestBackground(Interest interest) {
         interestManager.addInterest(interest);
     }
 
     @Override
-    public void onChangeProfilePhoto(DialogFragment dialog, Bitmap photo) {
-        myProfileFragment.setPhoto(photo);
+    public void onDeleteInterest(Interest interest) {
+        if (user != null) {
+            if (user.getInterests() != null) {
+                user.getInterests().remove(interest);
+            }
+            myProfileFragment.bind(user);
+            onDeleteInterestBackground(interest);
+        }
+    }
+
+    @Background
+    void onDeleteInterestBackground(Interest interest) {
+        interestManager.deleteInterest(interest.getId());
+    }
+
+    @Override
+    @Background
+    public void onSearchResultClick(Event event) {
+        event.getMainImage();
+        event.getImages();
+        event.setExhibits(exhibitManager.getExhibitsByEventId(event.getId()).getExhibits());
+        EventActivity.setEvent(event);
+        Intent intent = new Intent(this, EventActivity_.class);
+        startActivity(intent);
     }
 }

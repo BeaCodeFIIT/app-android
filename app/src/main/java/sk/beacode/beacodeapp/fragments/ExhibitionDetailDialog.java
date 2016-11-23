@@ -16,12 +16,8 @@ import org.androidannotations.annotations.EFragment;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.models.Exhibit;
 
-/**
- * Created by Veronika on 2.11.2016.
- */
-
 @EFragment(R.layout.fragment_dialog_detail_exhibition)
-public class DetailExhibitionDialog extends DialogFragment {
+public class ExhibitionDetailDialog extends DialogFragment {
 
     private Exhibit exhibit;
 

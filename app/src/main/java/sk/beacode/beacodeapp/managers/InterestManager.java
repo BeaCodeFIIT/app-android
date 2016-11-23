@@ -25,6 +25,4 @@ public interface InterestManager {
 
     @Delete("/interests/{interestId}")
     void deleteInterest(@Path int interestId);
-
-
 }

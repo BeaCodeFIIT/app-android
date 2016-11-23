@@ -1,13 +1,8 @@
 package sk.beacode.beacodeapp.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -25,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.activities.EventActivity;
-import sk.beacode.beacodeapp.activities.EventActivity_;
 import sk.beacode.beacodeapp.adapters.SearchEventsAdapter;
 import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
@@ -35,6 +28,12 @@ import sk.beacode.beacodeapp.views.RecentItemView;
 
 @EFragment(R.layout.fragment_search_events)
 public class SearchEventsFragment extends Fragment {
+
+    public interface SearchEventsListener {
+        void onSearchResultClick(Event event);
+    }
+
+    private SearchEventsListener listener;
 
     @ViewById(R.id.search_view)
     FloatingSearchView searchView;
@@ -51,17 +50,27 @@ public class SearchEventsFragment extends Fragment {
     private List<Event> lastResults;
     private List<Event> recentResults = new ArrayList<>();
 
+    public void setSearchEventsListener(SearchEventsListener listener) {
+        this.listener = listener;
+    }
+
     @AfterViews
     void initViews() {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.title_fragment_search_events);
+            actionBar.hide();
+        }
+
         adapter.setEvents(recentResults);
         recentView.setAdapter(adapter);
 
         adapter.setOnClickListener(new RecentItemView.OnClickListener() {
             @Override
             public void onClick(RecentItemView view, Event event) {
-                EventActivity.setEvent(event);
-                Intent intent = new Intent(getActivity(), EventActivity_.class);
-                startActivity(intent);
+                if (listener != null) {
+                    listener.onSearchResultClick(event);
+                }
             }
         });
 
@@ -77,9 +86,9 @@ public class SearchEventsFragment extends Fragment {
             public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
                 recentResults.add((Event) searchSuggestion);
                 adapter.setEvents(recentResults);
-                EventActivity.setEvent((Event) searchSuggestion);
-                Intent intent = new Intent(getActivity(), EventActivity_.class);
-                startActivity(intent);
+                if (listener != null) {
+                    listener.onSearchResultClick((Event) searchSuggestion);
+                }
             }
 
             @Override
@@ -87,15 +96,6 @@ public class SearchEventsFragment extends Fragment {
                 searchEvents(currentQuery);
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.title_fragment_search_events);
-        }
-        return null;
     }
 
     @Background

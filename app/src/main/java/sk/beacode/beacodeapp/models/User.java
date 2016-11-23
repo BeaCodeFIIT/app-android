@@ -1,20 +1,36 @@
 package sk.beacode.beacodeapp.models;
 
-import android.graphics.Bitmap;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private int id;
     private String firstName;
     private String lastName;
     private Image image;
-    private String password;
-    private String salt;
-    private String roles;
-    private Bitmap photo;
+
     private List<Interest> interests;
+
+        @JsonProperty("data")
+    public void setData(Map<String, Object> data) {
+        id = (int) data.get("id");
+        firstName = (String) data.get("firstName");
+        lastName = (String) data.get("lastName");
+        image = new ObjectMapper().convertValue(data.get("image"), Image.class);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -32,28 +48,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
+    public Image getImage() {
+        return image;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public List<Interest> getInterests() {
@@ -63,28 +63,4 @@ public class User {
     public void setInterests(List<Interest> interests) {
         this.interests = interests;
     }
-
-    public Bitmap getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Bitmap getImage() {
-        if (image == null) {
-            return null;
-        }
-        return image.getBitmap();
-    }
-
 }

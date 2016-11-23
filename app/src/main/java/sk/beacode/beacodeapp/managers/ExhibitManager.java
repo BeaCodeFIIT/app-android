@@ -14,6 +14,6 @@ import sk.beacode.beacodeapp.models.ExhibitList;
 public interface ExhibitManager {
 
     @Get("/events/{eventId}/exhibits")
-    ExhibitList getByEventId(@Path int eventId);
+    ExhibitList getExhibitsByEventId(@Path int eventId);
 }
 

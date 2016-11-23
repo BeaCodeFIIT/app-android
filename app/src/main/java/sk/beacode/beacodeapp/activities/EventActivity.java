@@ -13,12 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.fragments.DetailExhibitionDialog;
+import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListItemView;
@@ -76,7 +75,7 @@ public class EventActivity extends AppCompatActivity {
 
         descriptionView.setText(event.getDescription());
 
-        exhibitions.bind(event.getExhibitions());
+        exhibitions.bind(event.getExhibits());
         exhibitions.setStartTourListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +85,7 @@ public class EventActivity extends AppCompatActivity {
         exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
             @Override
             public void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit) {
-                DetailExhibitionDialog dialog = new DetailExhibitionDialog();
+                ExhibitionDetailDialog dialog = new ExhibitionDetailDialog();
                 dialog.bind(exhibit);
                 dialog.show(getFragmentManager(), "");
             }

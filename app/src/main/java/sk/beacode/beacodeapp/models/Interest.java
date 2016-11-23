@@ -7,14 +7,6 @@ public class Interest {
     private int id;
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public Interest setName(String name) {
-        this.name = name;
-        return this;
-    }
     public int getId() {
         return id;
     }
@@ -23,4 +15,12 @@ public class Interest {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Interest setName(String name) {
+        this.name = name;
+        return this;
+    }
 }
