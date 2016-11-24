@@ -26,6 +26,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activities.MainActivity_">
         </activity>
+        <activity
+            android:name=".activities.NavigationActivity_"
+            android:parentActivityName=".activities.MainActivity_">
+        </activity>
     </application>
 
 </manifest>

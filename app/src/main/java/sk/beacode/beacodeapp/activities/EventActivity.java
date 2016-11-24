@@ -1,5 +1,6 @@
 package sk.beacode.beacodeapp.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -79,7 +80,8 @@ public class EventActivity extends AppCompatActivity {
         exhibitions.setStartTourListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
+                startActivity(intent);
             }
         });
         exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
