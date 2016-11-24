@@ -89,7 +89,7 @@ public class Event implements SearchSuggestion {
         return start;
     }
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:MM")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     public void setStart(Date start) {
         this.start = start;
     }
@@ -98,7 +98,7 @@ public class Event implements SearchSuggestion {
         return end;
     }
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:MM")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     public void setEnd(Date end) {
         this.end = end;
     }
