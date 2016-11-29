@@ -1,4 +1,4 @@
-# BeaCode Android App
+# BeaCode Events
 
 [![Build Status](https://travis-ci.org/BeaCodeFIIT/app-android.svg?branch=develop)](https://travis-ci.org/BeaCodeFIIT/app-android)
 
