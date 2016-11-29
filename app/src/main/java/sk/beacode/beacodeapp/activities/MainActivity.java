@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
@@ -22,6 +24,7 @@ import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment_;
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(this, new Crashlytics());
 
         myEventsFragment = new MyEventsFragment_();
 
