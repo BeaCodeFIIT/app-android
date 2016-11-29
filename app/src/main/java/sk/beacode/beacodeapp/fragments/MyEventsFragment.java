@@ -1,6 +1,8 @@
 package sk.beacode.beacodeapp.fragments;
+
 import android.app.Fragment;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -25,6 +28,11 @@ import sk.beacode.beacodeapp.models.Event;
 
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
+
+    public interface MyEventsListener {
+        void onMyEventsRefresh();
+    }
+
     List<Event> events = new ArrayList<>();
 
     private MyEventsAdapter adapter = new MyEventsAdapter();
@@ -32,32 +40,20 @@ public class MyEventsFragment extends Fragment {
     @ViewById(R.id.cardView)
     RecyclerView myRecyclerView;
 
-    @AfterViews
-    void initViews() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.title_fragment_my_events);
-            actionBar.show();
-        }
+    @ViewById(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
-        myRecyclerView.setHasFixedSize(true);
-        myRecyclerView.setAdapter(adapter);
-
-        LinearLayoutManager myLayoutManager = new LinearLayoutManager(getActivity());
-        myLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        myRecyclerView.setLayoutManager(myLayoutManager);
-    }
+    MyEventsListener listener;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //@ViewById(R.id.event_title)
         public TextView titleTextView;
 
-       // @ViewById(R.id.event_description)
+        // @ViewById(R.id.event_description)
         public TextView eventDescription;
 
-       // @ViewById(R.id.event_date)
+        // @ViewById(R.id.event_date)
         public TextView eventStartDate;
 
         //@ViewById(R.id.event_image)
@@ -92,9 +88,41 @@ public class MyEventsFragment extends Fragment {
         }
     }
 
+    public void setMyEventsListener(MyEventsListener listener) {
+        this.listener = listener;
+    }
+
+    @AfterViews
+    void initViews() {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.title_fragment_my_events);
+            actionBar.show();
+        }
+
+        myRecyclerView.setHasFixedSize(true);
+        myRecyclerView.setAdapter(adapter);
+
+        LinearLayoutManager myLayoutManager = new LinearLayoutManager(getActivity());
+        myLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        myRecyclerView.setLayoutManager(myLayoutManager);
+
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (listener != null) {
+                    listener.onMyEventsRefresh();
+                }
+            }
+        });
+    }
+
     @UiThread
     public void bind(List<Event> events) {
         this.events = events;
         adapter.setData(events);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
