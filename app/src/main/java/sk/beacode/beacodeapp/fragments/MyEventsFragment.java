@@ -33,7 +33,7 @@ public class MyEventsFragment extends Fragment {
         void onMyEventsRefresh();
     }
 
-    List<Event> events = new ArrayList<>();
+    List<Event> events;
 
     private MyEventsAdapter adapter = new MyEventsAdapter();
 
@@ -108,7 +108,10 @@ public class MyEventsFragment extends Fragment {
 
         myRecyclerView.setLayoutManager(myLayoutManager);
 
-        swipeRefreshLayout.setRefreshing(true);
+        if (events == null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
