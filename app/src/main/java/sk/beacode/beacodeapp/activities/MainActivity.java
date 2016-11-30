@@ -46,6 +46,7 @@ import sk.beacode.beacodeapp.models.User;
 public class MainActivity extends AppCompatActivity
         implements MyProfileFragment.ProfileListener,
         SearchEventsFragment.SearchEventsListener,
+        MyEventsFragment.MyEventsListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     @ViewById(R.id.toolbar)
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
 
         myEventsFragment = new MyEventsFragment_();
+        myEventsFragment.setMyEventsListener(this);
 
         searchEventsFragment = new SearchEventsFragment_();
         searchEventsFragment.setSearchEventsListener(this);
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         navigation.getMenu().getItem(0).setChecked(true);
 
         getUser();
-        getEvents();
+        onMyEventsRefresh();
     }
 
     @Override
@@ -146,19 +148,6 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Background
-    void getEvents() {
-        List<Event> events = eventManager.getEvents().getEvents();
-
-        for (Event e : events) {
-            e.getMainImage();
-            e.getImages();
-            e.setExhibits(exhibitManager.getExhibitsByEventId(e.getId()).getExhibits());
-        }
-
-        myEventsFragment.bind(events);
     }
 
     @Background
@@ -242,5 +231,19 @@ public class MainActivity extends AppCompatActivity
         EventActivity.setEvent(event);
         Intent intent = new Intent(this, EventActivity_.class);
         startActivity(intent);
+    }
+
+    @Override
+    @Background
+    public void onMyEventsRefresh() {
+        List<Event> events = eventManager.getEvents().getEvents();
+
+        for (Event e : events) {
+            e.getMainImage();
+            e.getImages();
+            e.setExhibits(exhibitManager.getExhibitsByEventId(e.getId()).getExhibits());
+        }
+
+        myEventsFragment.bind(events);
     }
 }
