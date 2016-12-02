@@ -41,6 +41,7 @@ public class Image {
             Log.e(TAG, e.toString());
             return null;
         }
+
     }
 
     public void setBitmap(Bitmap bitmap) {

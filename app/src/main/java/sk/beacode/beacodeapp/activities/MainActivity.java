@@ -22,6 +22,8 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -187,14 +189,17 @@ public class MainActivity extends AppCompatActivity
 
     @Background
     void onChangeUserPictureBackground(Bitmap picture) {
-        // TODO
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+        userManager.updateImage(stream.toByteArray());
     }
 
     @Override
     public void onAddInterest(Interest interest) {
         if (user != null) {
             if (user.getInterests() != null) {
-                user.getInterests().add(interest);
+                user.getInterests().add(0,interest);
             }
             myProfileFragment.bind(user);
             onAddInterestBackground(interest);
@@ -245,5 +250,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         myEventsFragment.bind(events);
+    }
+
+    public DrawerLayout getDrawer(){
+        return this.drawer;
     }
 }
