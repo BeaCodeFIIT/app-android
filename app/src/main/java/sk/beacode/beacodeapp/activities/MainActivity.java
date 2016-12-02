@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity
         event.getMainImage();
         event.getImages();
         event.setExhibits(exhibitManager.getExhibitsByEventId(event.getId()).getExhibits());
-        EventActivity.setEvent(event);
+        EventActivity.event = event;
         Intent intent = new Intent(this, EventActivity_.class);
         startActivity(intent);
     }
@@ -245,5 +245,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         myEventsFragment.bind(events);
+    }
+
+    @Override
+    public void onMyEventsClick(Event event) {
     }
 }

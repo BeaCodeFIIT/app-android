@@ -15,7 +15,7 @@ import sk.beacode.beacodeapp.views.ExhibitListView;
 
 public class ExhibitAdapter extends ArrayAdapter<Exhibit> {
 
-    private ExhibitListView.Listener listener;
+    private ExhibitListView.ExhibitListListener listener;
 
     public ExhibitAdapter(Context context, int resource) {
         super(context, resource);
@@ -41,7 +41,7 @@ public class ExhibitAdapter extends ArrayAdapter<Exhibit> {
         return exhibitListItemView;
     }
 
-    public void setOnClickListener(ExhibitListView.Listener l) {
+    public void setOnClickListener(ExhibitListView.ExhibitListListener l) {
         this.listener = l;
     }
 }

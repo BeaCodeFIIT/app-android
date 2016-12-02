@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sk.beacode.beacodeapp.R;
@@ -26,7 +27,7 @@ import sk.beacode.beacodeapp.views.ExhibitListView;
 import sk.beacode.beacodeapp.views.HorizontalGalleryView;
 
 @EActivity(R.layout.activity_event)
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements ExhibitListView.ExhibitListListener {
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
@@ -46,11 +47,7 @@ public class EventActivity extends AppCompatActivity {
     @ViewById(R.id.exhibit_list)
     ExhibitListView exhibitions;
 
-    private static Event event;
-
-    public static void setEvent(Event event) {
-        EventActivity.event = event;
-    }
+    public static Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +77,12 @@ public class EventActivity extends AppCompatActivity {
         exhibitions.setStartTourListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                NavigationActivity.event = event;
                 Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
                 startActivity(intent);
             }
         });
-        exhibitions.setExhibitOnClickListener(new ExhibitListView.Listener() {
-            @Override
-            public void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit) {
-                ExhibitionDetailDialog dialog = new ExhibitionDetailDialog();
-                dialog.bind(exhibit);
-                dialog.show(getFragmentManager(), "");
-            }
-        });
+        exhibitions.setExhibitOnClickListener(this);
     }
 
     void setPhotos() {
@@ -120,4 +111,10 @@ public class EventActivity extends AppCompatActivity {
         gallery.bind(event.getImages());
     }
 
+    @Override
+    public void onExhibitItemClick(Exhibit exhibit) {
+        ExhibitionDetailDialog dialog = new ExhibitionDetailDialog();
+        dialog.bind(exhibit);
+        dialog.show(getFragmentManager(), "");
+    }
 }

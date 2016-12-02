@@ -31,6 +31,7 @@ public class MyEventsFragment extends Fragment {
 
     public interface MyEventsListener {
         void onMyEventsRefresh();
+        void onMyEventsClick(Event event);
     }
 
     List<Event> events;
@@ -82,7 +83,7 @@ public class MyEventsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            EventActivity.setEvent(event);
+            EventActivity.event = event;
             Intent intent = new Intent(v.getContext(), EventActivity_.class);
             v.getContext().startActivity(intent);
         }
