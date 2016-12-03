@@ -23,8 +23,8 @@ import sk.beacode.beacodeapp.models.Exhibit;
 @EViewGroup(R.layout.view_exhibit_list)
 public class ExhibitListView extends LinearLayout {
 
-    public interface Listener {
-        void onExhibitItemClick(ExhibitListItemView view, Exhibit exhibit);
+    public interface ExhibitListListener {
+        void onExhibitItemClick(Exhibit exhibit);
     }
 
     @ViewById(R.id.exhibits)
@@ -85,7 +85,7 @@ public class ExhibitListView extends LinearLayout {
         startTourButton.setOnClickListener(l);
     }
 
-    public void setExhibitOnClickListener(Listener l) {
+    public void setExhibitOnClickListener(ExhibitListListener l) {
         this.adapter.setOnClickListener(l);
     }
 }

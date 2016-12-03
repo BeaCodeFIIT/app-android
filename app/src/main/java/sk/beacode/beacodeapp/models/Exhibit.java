@@ -1,6 +1,8 @@
 package sk.beacode.beacodeapp.models;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,11 +10,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Exhibit {
+public class Exhibit implements Parcelable {
     private int id;
     private String name;
     private String description;
     private List<Image> images;
+    private List<Beacon> beacons;
+
+    public static final Creator<Exhibit> CREATOR = new Creator<Exhibit>() {
+        @Override
+        public Exhibit createFromParcel(Parcel parcel) {
+            return new Exhibit(parcel);
+        }
+
+        @Override
+        public Exhibit[] newArray(int i) {
+            return new Exhibit[i];
+        }
+    };
+
+    public Exhibit() {}
+
+    private Exhibit(Parcel parcel) {
+        id = parcel.readInt();
+        name = parcel.readString();
+        description = parcel.readString();
+        parcel.readList(images, null);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(description);
+        parcel.writeList(images);
+    }
 
     public String getName() {
         return name;
@@ -49,9 +86,20 @@ public class Exhibit {
     }
 
     public Bitmap getMainImage() {
-        if (images == null) {
-            return null;
-        }
-        return images.get(0).getBitmap();
+        // XXX
+        return null;
+
+//        if (images == null) {
+//            return null;
+//        }
+//        return images.get(0).getBitmap();
+    }
+
+    public List<Beacon> getBeacons() {
+        return beacons;
+    }
+
+    public void setBeacons(List<Beacon> beacons) {
+        this.beacons = beacons;
     }
 }

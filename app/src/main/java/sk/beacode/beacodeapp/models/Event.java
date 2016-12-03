@@ -2,6 +2,7 @@ package sk.beacode.beacodeapp.models;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event implements SearchSuggestion {
+public class Event implements SearchSuggestion, Parcelable {
     private int id;
     private String name;
     private Date start;
@@ -30,7 +31,7 @@ public class Event implements SearchSuggestion {
 
         @Override
         public Event[] newArray(int i) {
-            return new Event[0];
+            return new Event[i];
         }
     };
 
@@ -43,8 +44,8 @@ public class Event implements SearchSuggestion {
         end = new Date(parcel.readLong());
         description = parcel.readString();
         location = (Location) parcel.readSerializable();
-        parcel.readList(images, null);
-        parcel.readList(exhibits, null);
+        parcel.readList(images, Image.class.getClassLoader());
+        parcel.readList(exhibits, Exhibit.class.getClassLoader());
     }
 
     @Override

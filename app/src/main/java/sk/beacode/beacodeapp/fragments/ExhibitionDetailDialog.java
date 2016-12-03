@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,24 @@ import sk.beacode.beacodeapp.models.Exhibit;
 @EFragment(R.layout.fragment_dialog_detail_exhibition)
 public class ExhibitionDetailDialog extends DialogFragment {
 
+    public interface ExhibitDetailListener {
+        void onExhibitionDetailClose();
+    }
+
+    private ExhibitDetailListener listener;
+
     private Exhibit exhibit;
+
+    public void setListener(ExhibitDetailListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (listener != null) {
+            listener.onExhibitionDetailClose();
+        }
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

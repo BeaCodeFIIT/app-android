@@ -34,7 +34,7 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
 
     private Exhibit exhibit;
 
-    private ExhibitListView.Listener listener;
+    private ExhibitListView.ExhibitListListener listener;
 
     @RestService
     ExhibitManager exhibitManager;
@@ -76,11 +76,11 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     @Click({R.id.name, R.id.description, R.id.photo})
     void onClick() {
         if (listener != null) {
-            listener.onExhibitItemClick(this, exhibit);
+            listener.onExhibitItemClick(exhibit);
         }
     }
 
-    public void setOnClickListener(ExhibitListView.Listener l) {
+    public void setOnClickListener(ExhibitListView.ExhibitListListener l) {
         this.listener = l;
     }
 }
