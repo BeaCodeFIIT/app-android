@@ -1,20 +1,20 @@
 package sk.beacode.beacodeapp.activities;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.service.RangedBeacon;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
@@ -30,7 +30,7 @@ import sk.beacode.beacodeapp.models.Exhibit;
 
 
 @EActivity(R.layout.activity_navigation)
-public class NavigationActivity extends AppCompatActivity implements BeaconConsumer {
+public class NavigationActivity extends AppCompatActivity implements BeaconConsumer, ExhibitionDetailDialog.ExhibitDetailListener {
 
     private static final String[] LAYOUTS = {
             "m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24",
@@ -39,6 +39,8 @@ public class NavigationActivity extends AppCompatActivity implements BeaconConsu
     private BeaconManager manager;
 
     public static Event event;
+
+    private boolean eventDialogOpened = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,9 @@ public class NavigationActivity extends AppCompatActivity implements BeaconConsu
                                 System.out.println(b.getUuid());
                                 System.out.println(b.getMajor());
                                 System.out.println(b.getMinor());
-                                showExhibit(e);
+                                if (!eventDialogOpened) {
+                                    showExhibit(e);
+                                }
                                 return;
                             }
                         }
@@ -118,11 +122,23 @@ public class NavigationActivity extends AppCompatActivity implements BeaconConsu
         }
     }
 
-    @UiThread
+    @Background
     void showExhibit(Exhibit exhibit) {
+        exhibit.getImages();
+        showExhibitDialog(exhibit);
+    }
+
+    @UiThread
+    void showExhibitDialog(Exhibit exhibit) {
+        eventDialogOpened = true;
         ExhibitionDetailDialog dialog = new ExhibitionDetailDialog();
+        dialog.setListener(this);
         dialog.bind(exhibit);
-        dialog.show(getFragmentManager(), "");
+        try {
+            dialog.show(getFragmentManager(), "");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @UiThread
@@ -130,5 +146,10 @@ public class NavigationActivity extends AppCompatActivity implements BeaconConsu
         DecimalFormat df = new DecimalFormat("##.#");
         TextView distanceView = (TextView) findViewById(R.id.distance);
         distanceView.setText(id + ":  " + df.format(distance) + "m");
+    }
+
+    @Override
+    public void onExhibitionDetailClose() {
+        eventDialogOpened = false;
     }
 }

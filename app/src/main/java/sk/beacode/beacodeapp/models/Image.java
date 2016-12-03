@@ -11,12 +11,11 @@ import java.net.URL;
 import sk.beacode.beacodeapp.managers.Manager;
 
 public class Image implements Parcelable {
-    private static final String TAG = "Image";
-
     private int id;
     private String description;
     private String pathWithFile;
     private Bitmap bitmap;
+    private boolean cached = false;
 
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
@@ -65,18 +64,17 @@ public class Image implements Parcelable {
     }
 
     public Bitmap getBitmap() {
-        if (bitmap != null) {
-            return bitmap;
+        if (!cached) {
+            try {
+                URL url = new URL(Manager.IMAGE_ROOT_URL + pathWithFile);
+                bitmap = BitmapFactory.decodeStream(url.openStream());
+            } catch (java.io.IOException e) {
+                bitmap = null;
+            }
+            cached = true;
         }
 
-        try {
-            URL url = new URL(Manager.IMAGE_ROOT_URL + pathWithFile);
-            bitmap = BitmapFactory.decodeStream(url.openStream());
-            return bitmap;
-        } catch (java.io.IOException e) {
-            Log.e(TAG, e.toString());
-            return null;
-        }
+        return bitmap;
     }
 
     public void setBitmap(Bitmap bitmap) {

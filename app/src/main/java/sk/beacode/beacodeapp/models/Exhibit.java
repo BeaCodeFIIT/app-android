@@ -86,10 +86,13 @@ public class Exhibit implements Parcelable {
     }
 
     public Bitmap getMainImage() {
-        if (images == null) {
-            return null;
-        }
-        return images.get(0).getBitmap();
+        // XXX
+        return null;
+
+//        if (images == null) {
+//            return null;
+//        }
+//        return images.get(0).getBitmap();
     }
 
     public List<Beacon> getBeacons() {

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -25,6 +26,7 @@ import sk.beacode.beacodeapp.activities.EventActivity;
 import sk.beacode.beacodeapp.activities.EventActivity_;
 import sk.beacode.beacodeapp.adapters.MyEventsAdapter;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Exhibit;
 
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
@@ -73,7 +75,6 @@ public class MyEventsFragment extends Fragment {
             eventStartDate.setOnClickListener(this);
             eventImage.setOnClickListener(this);
             v.setOnClickListener(this);
-
         }
 
 
@@ -83,6 +84,10 @@ public class MyEventsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            showEvent(v);
+        }
+
+        void showEvent(View v) {
             EventActivity.event = event;
             Intent intent = new Intent(v.getContext(), EventActivity_.class);
             v.getContext().startActivity(intent);
@@ -126,7 +131,17 @@ public class MyEventsFragment extends Fragment {
     @UiThread
     public void bind(List<Event> events) {
         this.events = events;
+        getExhibitPhotos();
         adapter.setData(events);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Background
+    public void getExhibitPhotos() {
+        for (Event event : events) {
+            for (Exhibit e : event.getExhibits()) {
+                e.getImages();
+            }
+        }
     }
 }
