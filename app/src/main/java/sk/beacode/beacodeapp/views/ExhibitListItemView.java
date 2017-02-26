@@ -17,7 +17,7 @@ import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Exhibit;
 
-@EViewGroup(R.layout.view_exhibit_list_item)
+@EViewGroup(R.layout.item_exhibit)
 public class ExhibitListItemView extends LinearLayout implements Checkable {
 
     @ViewById(R.id.name)
@@ -26,10 +26,10 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     @ViewById(R.id.description)
     TextView descriptionView;
 
-    @ViewById(R.id.photo)
-    ImageView photoView;
+//    @ViewById(R.id.photo)
+//    ImageView photoView;
 
-    @ViewById(R.id.check_box)
+    @ViewById(R.id.checkbox)
     CheckBox checkBox;
 
     private Exhibit exhibit;
@@ -53,10 +53,10 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
 
     public void bind(Exhibit exhibit) {
         this.exhibit = exhibit;
-        photoView.setImageBitmap(exhibit.getMainImage());
+//        photoView.setImageBitmap(exhibit.getMainImage());
         nameView.setText(exhibit.getName());
         descriptionView.setText(exhibit.getDescription());
-    }
+}
 
     @Override
     public void setChecked(boolean b) {
@@ -73,7 +73,7 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
         checkBox.setChecked(!isChecked());
     }
 
-    @Click({R.id.name, R.id.description, R.id.photo})
+    @Click({R.id.name, R.id.description})
     void onClick() {
         if (listener != null) {
             listener.onExhibitItemClick(exhibit);

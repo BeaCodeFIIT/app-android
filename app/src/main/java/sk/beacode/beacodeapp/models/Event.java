@@ -22,6 +22,7 @@ public class Event implements SearchSuggestion, Parcelable {
     private Location location;
     private List<Image> images;
     private List<Exhibit> exhibits;
+    private List <Category> categories;
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
         @Override
@@ -147,5 +148,13 @@ public class Event implements SearchSuggestion, Parcelable {
 
     public void setExhibits(List<Exhibit> exhibits) {
         this.exhibits = exhibits;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

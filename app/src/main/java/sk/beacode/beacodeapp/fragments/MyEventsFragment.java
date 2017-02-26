@@ -139,8 +139,10 @@ public class MyEventsFragment extends Fragment {
     @Background
     public void getExhibitPhotos() {
         for (Event event : events) {
-            for (Exhibit e : event.getExhibits()) {
-                e.getImages();
+            if (null != event.getExhibits()) {
+                for (Exhibit e : event.getExhibits()) {
+                    e.getImages();
+                }
             }
         }
     }

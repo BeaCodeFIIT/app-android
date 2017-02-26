@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +20,15 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.adapters.CategoryAdapter;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
+import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListItemView;
@@ -44,14 +53,17 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
     @ViewById(R.id.gallery)
     HorizontalGalleryView gallery;
 
-    @ViewById(R.id.exhibit_list)
-    ExhibitListView exhibitions;
+    @ViewById(R.id.exhibits)
+    ExpandableListView mExhibits;
 
     public static Event event;
+
+    CategoryAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
     }
 
     @AfterViews
@@ -73,16 +85,20 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 
         descriptionView.setText(event.getDescription());
 
-        exhibitions.bind(event.getExhibits());
-        exhibitions.setStartTourListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavigationActivity.event = event;
-                Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
-                startActivity(intent);
-            }
-        });
-        exhibitions.setExhibitOnClickListener(this);
+        if (null != event.getCategories()){
+            mAdapter = new CategoryAdapter(this, event.getCategories());
+            mExhibits.setAdapter(mAdapter);
+        }
+        //        exhibits.bind(event.getExhibits());
+//        exhibits.setStartTourListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                NavigationActivity.event = event;
+//                Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
+//                startActivity(intent);
+//            }
+//        });
+//        exhibits.setExhibitOnClickListener(this);
     }
 
     void setPhotos() {

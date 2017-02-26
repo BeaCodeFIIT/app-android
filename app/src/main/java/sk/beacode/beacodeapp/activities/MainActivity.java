@@ -38,7 +38,9 @@ import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.managers.InterestManager;
 import sk.beacode.beacodeapp.managers.UserManager;
+import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
@@ -246,7 +248,11 @@ public class MainActivity extends AppCompatActivity
         for (Event e : events) {
             e.getMainImage();
             e.getImages();
-            e.setExhibits(exhibitManager.getExhibitsByEventId(e.getId()).getExhibits());
+            if (null != e.getCategories()) {
+                for (Category category : e.getCategories()) {
+                    category.setExhibits(exhibitManager.getExhibitsByEventId(category.getId()).getExhibits());
+                }
+            }
         }
 
         myEventsFragment.bind(events);

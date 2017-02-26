@@ -63,12 +63,19 @@
                 android:requiresFadingEdge="horizontal"
                 android:fadingEdgeLength="@dimen/activity_horizontal_margin"/>
 
-            <sk.beacode.beacodeapp.views.ExhibitListView_
-                android:id="@+id/exhibit_list"
+            <!--<sk.beacode.beacodeapp.views.ExhibitListView_-->
+                <!--android:id="@+id/exhibit_list"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"/>-->
+            <ExpandableListView
+                android:id="@+id/exhibits"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+                android:layout_height="400dp"
+                android:groupIndicator="@null">
+
+            </ExpandableListView>
 
         </LinearLayout>
 

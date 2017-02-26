@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,6 +16,8 @@ public class Exhibit implements Parcelable {
     private int id;
     private String name;
     private String description;
+    private Date start;
+    private Date end;
     private List<Image> images;
     private List<Beacon> beacons;
 
@@ -101,5 +105,24 @@ public class Exhibit implements Parcelable {
 
     public void setBeacons(List<Beacon> beacons) {
         this.beacons = beacons;
+    }
+
+
+    public Date getStart() {
+        return start;
+    }
+
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    public void setEnd(Date end) {
+        this.end = end;
     }
 }
