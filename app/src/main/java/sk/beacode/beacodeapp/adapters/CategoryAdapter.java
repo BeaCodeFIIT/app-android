@@ -7,10 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,19 +50,26 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         TextView mEnd;
         @BindView(R.id.checkbox)
         CheckBox mCheckBox;
-
+        
         ChildViewHolder(View view) {
             mView = view;
             ButterKnife.bind(this, view);
+
         }
     }
 
     private final List<Category> mItems;
     private final LayoutInflater mInflater;
+    private List<List<Boolean>> checked_exibits = new ArrayList<>();
 
     public CategoryAdapter(Context context, List<Category> items) {
         mItems = items;
         mInflater = LayoutInflater.from(context);
+        for (int j=0; j < mItems.size(); j++) {
+            List<Boolean> checked = new ArrayList<Boolean>(Arrays.asList(new Boolean[mItems.get(j).getExhibits().size()]));
+            Collections.fill(checked, Boolean.FALSE);
+            checked_exibits.add(checked);
+        }
     }
 
     @Override
@@ -98,7 +109,6 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        System.out.println("getGroupView " + Integer.toString(i));
         GroupViewHolder holder;
 
         if (view == null) {
@@ -117,9 +127,8 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        System.out.println("getChildView " + Integer.toString(i));
-        ChildViewHolder holder;
+    public View getChildView(final int i, final int i1, boolean b, View view, ViewGroup viewGroup) {
+        final ChildViewHolder holder;
 
         if (view == null) {
             view = mInflater.inflate(R.layout.item_exhibit, null);
@@ -129,29 +138,55 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             holder = (ChildViewHolder) view.getTag();
         }
 
+        final View finalView = view;
+        ((CheckBox)view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (((CheckBox) finalView.findViewById(R.id.checkbox)).isChecked()) {
+                        checked_exibits.get(i).set(i1, true);
+                    } else {
+                        checked_exibits.get(i).set(i1, false);
+                    }
+                }
+            });
+
         holder.mItem = mItems.get(i).getExhibits().get(i1);
         ((TextView) view.findViewById(R.id.name)).setText(holder.mItem.getName());
         ((TextView) view.findViewById(R.id.description)).setText(holder.mItem.getDescription());
-        ((TextView) view.findViewById(R.id.exibit_start)).setText(holder.mItem.getStart().toString());
 
         Calendar cal = Calendar.getInstance();
         String stringMonthToday = (String) DateFormat.format("MMMM", cal.getTime());
-        String dayToday = (String) DateFormat.format("dd", cal.getTime()); //20
+        String dayToday = (String) DateFormat.format("dd", cal.getTime());
 
-        String stringMonth = (String) DateFormat.format("MMMM", holder.mItem.getStart());
-        String day = (String) DateFormat.format("dd", holder.mItem.getStart()); //20
-        System.out.println();
+        String stringMonthFrom = (String) DateFormat.format("MMMM", holder.mItem.getStart());
+        String stringMonthTo = (String) DateFormat.format("MMMM", holder.mItem.getEnd());
+        String dayFrom = (String) DateFormat.format("dd", holder.mItem.getStart());
+        String dayTo = (String) DateFormat.format("dd", holder.mItem.getEnd());
+        String hourTodayFrom = (String) DateFormat.format("HH", holder.mItem.getStart());
+        String hourTodayTo = (String) DateFormat.format("HH", holder.mItem.getEnd());
+        String minTodayFrom = (String) DateFormat.format("mm", holder.mItem.getStart());
+        String minTodayTo = (String) DateFormat.format("mm", holder.mItem.getEnd());
+        String date_from, date_to;
 
-        String hourToday = (String) DateFormat.format("HH", holder.mItem.getStart()); //20
-        String minToday = (String) DateFormat.format("mm", holder.mItem.getStart()); //20
-        String date;
-
-        if (stringMonth.equals(stringMonthToday) && day.equals(dayToday)){
-            date = "Today"; // TODO: remove hardcoded string !
+        if (stringMonthFrom.equals(stringMonthToday) && dayFrom.equals(dayToday)){
+            date_from = "Today"; // TODO: remove hardcoded string !
         } else {
-            date = day + ". " + stringMonth + " " + hourToday + " " + minToday;
+            date_from = dayFrom + ". " + stringMonthFrom + ", " + hourTodayFrom + ":" + minTodayFrom + "   -";
         }
-        ((TextView) view.findViewById(R.id.exibit_end)).setText(holder.mItem.getEnd().toString());
+
+        if (stringMonthTo.equals(stringMonthToday) && dayTo.equals(dayToday)){
+            date_to = "Today"; // TODO: remove hardcoded string !
+        } else {
+            date_to = dayTo + ". " + stringMonthTo + ", " + hourTodayTo + ":" + minTodayTo;
+        }
+
+        ((TextView) view.findViewById(R.id.exibit_start)).setText(date_from);
+        ((TextView) view.findViewById(R.id.exibit_end)).setText(date_to);
+
+        if (checked_exibits.get(i).get(i1)) {
+            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);
+        } else {
+            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(false);
+        }
 
         return view;
     }
