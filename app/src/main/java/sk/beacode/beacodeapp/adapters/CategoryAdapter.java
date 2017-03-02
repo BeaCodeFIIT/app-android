@@ -50,7 +50,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         TextView mEnd;
         @BindView(R.id.checkbox)
         CheckBox mCheckBox;
-        
+
         ChildViewHolder(View view) {
             mView = view;
             ButterKnife.bind(this, view);

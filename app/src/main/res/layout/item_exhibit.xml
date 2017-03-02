@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_marginLeft="20dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--<ImageView-->
@@ -16,6 +17,8 @@
 
     <TextView
         android:id="@+id/name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:maxLines="1"
         android:ellipsize="end"
@@ -28,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
+        android:layout_marginLeft="20dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -57,6 +61,8 @@
 
     <TextView
         android:id="@+id/description"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
         android:ellipsize="marquee"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:maxLines="2"
@@ -66,6 +72,9 @@
         android:layout_below="@id/date"/>
 
     <CheckBox
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="16dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
