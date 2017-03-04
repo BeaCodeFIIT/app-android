@@ -79,24 +79,12 @@ public class Exhibit implements Parcelable {
         this.id = id;
     }
 
-    public List<Bitmap> getImages() {
-        List<Bitmap> bitmaps = new ArrayList<>();
-        if (images != null) {
-            for (int i = 1; i < images.size(); ++i) {
-                bitmaps.add(images.get(i).getBitmap());
-            }
-        }
-        return bitmaps;
+    public List<Image> getImages() {
+        return images;
     }
 
-    public Bitmap getMainImage() {
-        // XXX
-        return null;
-
-//        if (images == null) {
-//            return null;
-//        }
-//        return images.get(0).getBitmap();
+    public Image getMainImage() {
+        return images.get(0);
     }
 
     public List<Beacon> getBeacons() {

@@ -2,7 +2,10 @@ package sk.beacode.beacodeapp.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,13 +23,15 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment_;
@@ -34,15 +39,19 @@ import sk.beacode.beacodeapp.fragments.MyProfileFragment;
 import sk.beacode.beacodeapp.fragments.MyProfileFragment_;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment;
 import sk.beacode.beacodeapp.fragments.SearchEventsFragment_;
-import sk.beacode.beacodeapp.managers.EventManager;
-import sk.beacode.beacodeapp.managers.ExhibitManager;
-import sk.beacode.beacodeapp.managers.InterestManager;
-import sk.beacode.beacodeapp.managers.UserManager;
+import sk.beacode.beacodeapp.managers.EventApi;
+import sk.beacode.beacodeapp.managers.ExhibitApi;
+import sk.beacode.beacodeapp.managers.InterestApi;
+import sk.beacode.beacodeapp.managers.Manager;
+import sk.beacode.beacodeapp.managers.UserApi;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.EventList;
 import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.models.ExhibitList;
 import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.Interest;
+import sk.beacode.beacodeapp.models.InterestList;
 import sk.beacode.beacodeapp.models.User;
 
 @EActivity(R.layout.activity_main)
@@ -62,18 +71,6 @@ public class MainActivity extends AppCompatActivity
     @ViewById(R.id.nav_view)
     NavigationView navigation;
 
-    @RestService
-    UserManager userManager;
-
-    @RestService
-    EventManager eventManager;
-
-    @RestService
-    InterestManager interestManager;
-
-    @RestService
-    ExhibitManager exhibitManager;
-
     MyEventsFragment myEventsFragment;
     SearchEventsFragment searchEventsFragment;
     MyProfileFragment myProfileFragment;
@@ -85,6 +82,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         Fabric.with(this, new Crashlytics());
+
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Manager.initialize(deviceId);
 
         myEventsFragment = new MyEventsFragment_();
         myEventsFragment.setMyEventsListener(this);
@@ -156,10 +156,35 @@ public class MainActivity extends AppCompatActivity
 
     @Background
     void getUser() {
-        user = userManager.getLoggedInUser();
-        user.getImage().getBitmap();
-        user.setInterests(interestManager.getInterests().getInterests());
-        myProfileFragment.bind(user);
+        UserApi userApi = Manager.getInstance().getUserApi();
+        Call<User> userCall = userApi.getLoggedInUser();
+        userCall.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                final User user = response.body();
+                //user.getImage().getBitmap();
+
+                InterestApi interestApi = Manager.getInstance().getInterestApi();
+                Call<InterestList> interestCall = interestApi.getInterests();
+                interestCall.enqueue(new Callback<InterestList>() {
+                    @Override
+                    public void onResponse(Call<InterestList> call, Response<InterestList> response) {
+                        user.setInterests(response.body().getInterests());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InterestList> call, Throwable t) {
+
+                    }
+                });
+                myProfileFragment.bind(user);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -178,23 +203,40 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onChangeUserPicture(Bitmap picture) {
+    public void onChangeUserPicture(Uri picture) {
         if (user != null) {
             if (user.getImage() == null) {
                 user.setImage(new Image());
             }
-            user.getImage().setBitmap(picture);
+            user.getImage().setUri(picture);
             myProfileFragment.bind(user);
             onChangeUserPictureBackground(picture);
         }
     }
 
     @Background
-    void onChangeUserPictureBackground(Bitmap picture) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        picture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    void onChangeUserPictureBackground(Uri picture) {
+        try {
+            Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picture);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
-        userManager.updateImage(stream.toByteArray());
+            UserApi userApi = Manager.getInstance().getUserApi();
+            Call<Void> interestCall = userApi.updateImage(stream.toByteArray());
+            interestCall.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    // TODO
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    // TODO
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -210,7 +252,19 @@ public class MainActivity extends AppCompatActivity
 
     @Background
     void onAddInterestBackground(Interest interest) {
-        interestManager.addInterest(interest);
+        InterestApi interestApi = Manager.getInstance().getInterestApi();
+        Call<Void> interestCall = interestApi.addInterest(interest);
+        interestCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // TODO
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // TODO
+            }
+        });
     }
 
     @Override
@@ -226,15 +280,41 @@ public class MainActivity extends AppCompatActivity
 
     @Background
     void onDeleteInterestBackground(Interest interest) {
-        interestManager.deleteInterest(interest.getId());
+        InterestApi interestApi = Manager.getInstance().getInterestApi();
+        Call<Void> interestCall = interestApi.deleteInterest(interest.getId());
+        interestCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // TODO
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // TODO
+            }
+        });
     }
 
     @Override
     @Background
-    public void onSearchResultClick(Event event) {
+    public void onSearchResultClick(final Event event) {
         event.getMainImage();
         event.getImages();
-        event.setExhibits(exhibitManager.getExhibitsByEventId(event.getId()).getExhibits());
+
+        ExhibitApi exhibitApi = Manager.getInstance().getExhibitApi();
+        Call<ExhibitList> exhibitCall = exhibitApi.getExhibitsByEventId(event.getId());
+        exhibitCall.enqueue(new Callback<ExhibitList>() {
+            @Override
+            public void onResponse(Call<ExhibitList> call, Response<ExhibitList> response) {
+                event.setExhibits(response.body().getExhibits());
+            }
+
+            @Override
+            public void onFailure(Call<ExhibitList> call, Throwable t) {
+
+            }
+        });
+
         EventActivity.event = event;
         Intent intent = new Intent(this, EventActivity_.class);
         startActivity(intent);
@@ -243,19 +323,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     @Background
     public void onMyEventsRefresh() {
-        List<Event> events = eventManager.getEvents().getEvents();
+        EventApi eventApi = Manager.getInstance().getEventApi();
+        Call<EventList> eventCall = eventApi.getEvents();
+        eventCall.enqueue(new Callback<EventList>() {
+            @Override
+            public void onResponse(Call<EventList> call, Response<EventList> response) {
+                List<Event> events = response.body().getEvents();
+                for (Event e : events) {
+                    e.getMainImage();
+                    e.getImages();
+                    if (null != e.getCategories()) {
+                        for (final Category category : e.getCategories()) {
+                            ExhibitApi exhibitApi = Manager.getInstance().getExhibitApi();
+                            Call<ExhibitList> exhibitCall = exhibitApi.getExhibitsByEventId(category.getId());
+                            exhibitCall.enqueue(new Callback<ExhibitList>() {
+                                @Override
+                                public void onResponse(Call<ExhibitList> call, Response<ExhibitList> response) {
+                                    category.setExhibits(response.body().getExhibits());
+                                }
 
-        for (Event e : events) {
-            e.getMainImage();
-            e.getImages();
-            if (null != e.getCategories()) {
-                for (Category category : e.getCategories()) {
-                    category.setExhibits(exhibitManager.getExhibitsByEventId(category.getId()).getExhibits());
+                                @Override
+                                public void onFailure(Call<ExhibitList> call, Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
                 }
-            }
-        }
 
-        myEventsFragment.bind(events);
+                myEventsFragment.bind(events);
+            }
+
+            @Override
+            public void onFailure(Call<EventList> call, Throwable t) {
+
+            }
+        });
     }
 
     public DrawerLayout getDrawer(){

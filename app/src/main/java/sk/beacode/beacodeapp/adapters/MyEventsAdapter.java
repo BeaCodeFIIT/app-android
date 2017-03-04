@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.models.Event;
+import sk.beacode.beacodeapp.models.Image;
 
 public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyViewHolder> {
 
@@ -45,7 +48,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         String date;
 
         if (stringMonth.equals(stringMonthToday) && day.equals(dayToday)){
-            date = "Today"; // TODO: remove hardcoded string !
+            date = "Today";
         } else {
             date = day + ". " + stringMonth;
         }
@@ -54,12 +57,12 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         holder.eventDescription.setText(data.get(position).getDescription());
         holder.eventStartDate.setText(date);
 
-        Bitmap image = data.get(position).getMainImage();
+        Image image = data.get(position).getMainImage();
 
-        System.out.println(image);
         if (image != null) {
-            holder.eventImage.setImageBitmap(image);
+            Glide.with(holder.eventImage.getContext()).load(image.getUri()).into(holder.eventImage);
         } else {
+            Glide.clear(holder.eventImage);
             holder.eventImage.setVisibility(View.GONE);
         }
 

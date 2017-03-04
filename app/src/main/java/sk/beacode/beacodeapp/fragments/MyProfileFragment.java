@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 
@@ -45,7 +46,7 @@ public class MyProfileFragment extends Fragment {
 
     public interface ProfileListener {
         void onChangeUserName(String firstName, String lastName);
-        void onChangeUserPicture(Bitmap picture);
+        void onChangeUserPicture(Uri picture);
         void onAddInterest(Interest interest);
         void onDeleteInterest(Interest interest);
     }
@@ -167,12 +168,7 @@ public class MyProfileFragment extends Fragment {
             super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
             Uri imageUri = imageReturnedIntent.getData();
             if ((requestCode == 0 || requestCode == 1) && resultCode == Activity.RESULT_OK) {
-                try {
-                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                    listener.onChangeUserPicture(imageBitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                listener.onChangeUserPicture(imageUri);
                 this.getDialog().cancel();
             }
         }
@@ -224,7 +220,7 @@ public class MyProfileFragment extends Fragment {
 
         Image image = user.getImage();
         if (pictureView != null && image != null) {
-            pictureView.setImageBitmap(image.getBitmap());
+            Glide.with(this).load(image.getUri()).into(pictureView);
         }
 
         if (nameView != null) {
