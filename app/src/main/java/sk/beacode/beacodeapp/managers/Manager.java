@@ -12,7 +12,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class Manager {
 
     public static final String API_ROOT_URL = "http://147.175.149.218/beacode_dev/current/web/app.php/api/app/";
-    public static final String IMAGE_ROOT_URL = "http://147.175.149.218/beacode_dev/";
 
     //Singleton
     private static Manager instance = null;

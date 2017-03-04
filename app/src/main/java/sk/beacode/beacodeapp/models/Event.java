@@ -120,6 +120,7 @@ public class Event implements SearchSuggestion, Parcelable {
     }
 
     public List<Image> getImages() {
+        System.out.println(images);
         return images;
     }
 
@@ -128,7 +129,7 @@ public class Event implements SearchSuggestion, Parcelable {
     }
 
     public Image getMainImage() {
-        return images.get(0);
+        return images != null ? images.get(0) : null;
     }
 
     public List<Exhibit> getExhibits() {

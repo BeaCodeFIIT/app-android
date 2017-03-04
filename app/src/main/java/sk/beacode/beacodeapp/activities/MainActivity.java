@@ -328,11 +328,6 @@ public class MainActivity extends AppCompatActivity
         eventCall.enqueue(new Callback<EventList>() {
             @Override
             public void onResponse(Call<EventList> call, Response<EventList> response) {
-                try {
-                    System.out.println(response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 List<Event> events = response.body().getEvents();
                 for (Event e : events) {
                     e.getMainImage();

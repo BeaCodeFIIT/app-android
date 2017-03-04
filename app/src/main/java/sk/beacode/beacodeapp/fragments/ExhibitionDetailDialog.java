@@ -60,16 +60,10 @@ public class ExhibitionDetailDialog extends DialogFragment {
             TextView description = (TextView) dialogView.findViewById(R.id.detailExhibitionXXX);
             description.setText(exhibit.getDescription());
             ImageView photo = (ImageView) dialogView.findViewById(R.id.imageDetailExhibition);
-            photo.setImageBitmap(exhibit.getMainImage());
+            //photo.setImageBitmap(exhibit.getMainImage());
         }
 
         return dialogBuilder.create();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
     }
 
     public void bind(Exhibit exhibit) {

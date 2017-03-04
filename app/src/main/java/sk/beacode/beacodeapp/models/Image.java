@@ -7,14 +7,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.net.URL;
 
 import sk.beacode.beacodeapp.managers.Manager;
 
 public class Image {
+    private static final String IMAGE_ROOT_URL = "http://147.175.149.218/beacode_dev";
+
     private int id;
     private String description;
-    private Uri uri;
+    private String pathWithFile;
 
 //    public static final Creator<Image> CREATOR = new Creator<Image>() {
 //        @Override
@@ -67,10 +71,18 @@ public class Image {
     }
 
     public Uri getUri() {
-        return uri;
+        return Uri.parse(getPathWithFile());
     }
 
     public void setUri(Uri uri) {
-        this.uri = uri;
+        pathWithFile = uri.toString();
+    }
+
+    public String getPathWithFile() {
+        return pathWithFile;
+    }
+
+    public void setPathWithFile(String pathWithFile) {
+        this.pathWithFile = IMAGE_ROOT_URL + pathWithFile;
     }
 }

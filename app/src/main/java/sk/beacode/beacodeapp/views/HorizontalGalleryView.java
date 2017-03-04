@@ -68,7 +68,7 @@ public class HorizontalGalleryView extends HorizontalScrollView {
             int bottom = 25;
             imageView.setPadding(left, top, right, bottom);
 
-            final Uri imageUri = this.photos.get(0).getUri();
+            final Uri imageUri = this.photos.get(i).getUri();
             Glide.with(getContext()).load(imageUri).into(imageView);
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);

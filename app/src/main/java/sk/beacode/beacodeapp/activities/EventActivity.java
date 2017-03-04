@@ -1,6 +1,5 @@
 package sk.beacode.beacodeapp.activities;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,8 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,21 +19,14 @@ import com.bumptech.glide.request.target.Target;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.adapters.CategoryAdapter;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
-import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
-import sk.beacode.beacodeapp.views.ExhibitListItemView;
 import sk.beacode.beacodeapp.views.ExhibitListView;
 import sk.beacode.beacodeapp.views.HorizontalGalleryView;
 
@@ -107,6 +97,10 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
     }
 
     void setPhotos() {
+        if (event.getMainImage() == null) {
+            return;
+        }
+
         Glide.with(this).load(event.getMainImage().getUri()).asBitmap().listener(new RequestListener<Uri, Bitmap>() {
             @Override
             public boolean onException(Exception e, Uri model, Target<Bitmap> target, boolean isFirstResource) {
@@ -115,29 +109,26 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 
             @Override
             public boolean onResourceReady(Bitmap resource, Uri model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                if (resource != null && !resource.isRecycled()) {
-                    mainPhotoView.setImageBitmap(resource);
-                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch swatch = palette.getVibrantSwatch();
-                            if (swatch != null) {
-                                int appBarColor = swatch.getRgb();
+                Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch swatch = palette.getVibrantSwatch();
+                        if (swatch != null) {
+                            int appBarColor = swatch.getRgb();
 
-                                float[] hsv = new float[3];
-                                Color.colorToHSV(appBarColor, hsv);
-                                hsv[2] *= 0.8;
-                                int statusBarColor = Color.HSVToColor(hsv);
+                            float[] hsv = new float[3];
+                            Color.colorToHSV(appBarColor, hsv);
+                            hsv[2] *= 0.8;
+                            int statusBarColor = Color.HSVToColor(hsv);
 
-                                collapsingToolbar.setContentScrimColor(appBarColor);
-                                collapsingToolbar.setStatusBarScrimColor(statusBarColor);
-                            }
+                            collapsingToolbar.setContentScrimColor(appBarColor);
+                            collapsingToolbar.setStatusBarScrimColor(statusBarColor);
                         }
-                    });
-                }
+                    }
+                });
                 return true;
             }
-        });
+        }).into(mainPhotoView);
 
         gallery.bind(event.getImages());
     }
