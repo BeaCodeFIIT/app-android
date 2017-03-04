@@ -16,7 +16,7 @@ public class User {
 
     private List<Interest> interests;
 
-        @JsonProperty("data")
+    @JsonProperty("data")
     public void setData(Map<String, Object> data) {
         id = (int) data.get("id");
         firstName = (String) data.get("firstName");

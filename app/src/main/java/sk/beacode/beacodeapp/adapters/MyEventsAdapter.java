@@ -54,14 +54,14 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyVie
         holder.eventDescription.setText(data.get(position).getDescription());
         holder.eventStartDate.setText(date);
 
-        Bitmap image = data.get(position).getMainImage();
-
-        System.out.println(image);
-        if (image != null) {
-            holder.eventImage.setImageBitmap(image);
-        } else {
-            holder.eventImage.setVisibility(View.GONE);
-        }
+//        Bitmap image = data.get(position).getMainImage();
+//
+//        System.out.println(image);
+//        if (image != null) {
+//            holder.eventImage.setImageBitmap(image);
+//        } else {
+//            holder.eventImage.setVisibility(View.GONE);
+//        }
 
         holder.bind(data.get(position));
     }

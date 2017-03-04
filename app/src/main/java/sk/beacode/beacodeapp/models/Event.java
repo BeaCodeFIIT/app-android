@@ -1,6 +1,5 @@
 package sk.beacode.beacodeapp.models;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,7 +7,6 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class Event implements SearchSuggestion, Parcelable {
     private Location location;
     private List<Image> images;
     private List<Exhibit> exhibits;
-    private List <Category> categories;
+    private List<Category> categories;
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
         @Override
@@ -121,25 +119,16 @@ public class Event implements SearchSuggestion, Parcelable {
         this.location = location;
     }
 
-    public List<Bitmap> getImages() {
-        List<Bitmap> bitmaps = new ArrayList<>();
-        if (images != null) {
-            for (int i = 1; i < images.size(); ++i) {
-                bitmaps.add(images.get(i).getBitmap());
-            }
-        }
-        return bitmaps;
+    public List<Image> getImages() {
+        return images;
     }
 
     public void setImages(List<Image> images) {
         this.images = images;
     }
 
-    public Bitmap getMainImage() {
-        if (images == null) {
-            return null;
-        }
-        return images.get(0).getBitmap();
+    public Image getMainImage() {
+        return images.get(0);
     }
 
     public List<Exhibit> getExhibits() {

@@ -3,6 +3,7 @@ package sk.beacode.beacodeapp.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,10 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -102,27 +107,37 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
     }
 
     void setPhotos() {
-        Bitmap mainPhoto = event.getMainImage();
-        if (mainPhoto != null && !mainPhoto.isRecycled()) {
-            mainPhotoView.setImageBitmap(mainPhoto);
-            Palette.from(mainPhoto).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    Palette.Swatch swatch = palette.getVibrantSwatch();
-                    if (swatch != null) {
-                        int appBarColor = swatch.getRgb();
+        Glide.with(this).load(event.getMainImage().getUri()).asBitmap().listener(new RequestListener<Uri, Bitmap>() {
+            @Override
+            public boolean onException(Exception e, Uri model, Target<Bitmap> target, boolean isFirstResource) {
+                return false;
+            }
 
-                        float[] hsv = new float[3];
-                        Color.colorToHSV(appBarColor, hsv);
-                        hsv[2] *= 0.8;
-                        int statusBarColor = Color.HSVToColor(hsv);
+            @Override
+            public boolean onResourceReady(Bitmap resource, Uri model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                if (resource != null && !resource.isRecycled()) {
+                    mainPhotoView.setImageBitmap(resource);
+                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch swatch = palette.getVibrantSwatch();
+                            if (swatch != null) {
+                                int appBarColor = swatch.getRgb();
 
-                        collapsingToolbar.setContentScrimColor(appBarColor);
-                        collapsingToolbar.setStatusBarScrimColor(statusBarColor);
-                    }
+                                float[] hsv = new float[3];
+                                Color.colorToHSV(appBarColor, hsv);
+                                hsv[2] *= 0.8;
+                                int statusBarColor = Color.HSVToColor(hsv);
+
+                                collapsingToolbar.setContentScrimColor(appBarColor);
+                                collapsingToolbar.setStatusBarScrimColor(statusBarColor);
+                            }
+                        }
+                    });
                 }
-            });
-        }
+                return true;
+            }
+        });
 
         gallery.bind(event.getImages());
     }
