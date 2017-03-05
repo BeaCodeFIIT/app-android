@@ -150,37 +150,39 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             });
 
         holder.mItem = mItems.get(i).getExhibits().get(i1);
-        ((TextView) view.findViewById(R.id.name)).setText(holder.mItem.getName());
-        ((TextView) view.findViewById(R.id.description)).setText(holder.mItem.getDescription());
+        if (holder.mItem.getStart() != null && holder.mItem.getEnd() != null) {
+            ((TextView) view.findViewById(R.id.name)).setText(holder.mItem.getName());
+            ((TextView) view.findViewById(R.id.description)).setText(holder.mItem.getDescription());
 
-        Calendar cal = Calendar.getInstance();
-        String stringMonthToday = (String) DateFormat.format("MMMM", cal.getTime());
-        String dayToday = (String) DateFormat.format("dd", cal.getTime());
+            Calendar cal = Calendar.getInstance();
+            String stringMonthToday = (String) DateFormat.format("MMMM", cal.getTime());
+            String dayToday = (String) DateFormat.format("dd", cal.getTime());
 
-        String stringMonthFrom = (String) DateFormat.format("MMMM", holder.mItem.getStart());
-        String stringMonthTo = (String) DateFormat.format("MMMM", holder.mItem.getEnd());
-        String dayFrom = (String) DateFormat.format("dd", holder.mItem.getStart());
-        String dayTo = (String) DateFormat.format("dd", holder.mItem.getEnd());
-        String hourTodayFrom = (String) DateFormat.format("HH", holder.mItem.getStart());
-        String hourTodayTo = (String) DateFormat.format("HH", holder.mItem.getEnd());
-        String minTodayFrom = (String) DateFormat.format("mm", holder.mItem.getStart());
-        String minTodayTo = (String) DateFormat.format("mm", holder.mItem.getEnd());
-        String date_from, date_to;
+            String stringMonthFrom = (String) DateFormat.format("MMMM", holder.mItem.getStart());
+            String stringMonthTo = (String) DateFormat.format("MMMM", holder.mItem.getEnd());
+            String dayFrom = (String) DateFormat.format("dd", holder.mItem.getStart());
+            String dayTo = (String) DateFormat.format("dd", holder.mItem.getEnd());
+            String hourTodayFrom = (String) DateFormat.format("HH", holder.mItem.getStart());
+            String hourTodayTo = (String) DateFormat.format("HH", holder.mItem.getEnd());
+            String minTodayFrom = (String) DateFormat.format("mm", holder.mItem.getStart());
+            String minTodayTo = (String) DateFormat.format("mm", holder.mItem.getEnd());
+            String date_from, date_to;
 
-        if (stringMonthFrom.equals(stringMonthToday) && dayFrom.equals(dayToday)){
-            date_from = "Today"; // TODO: remove hardcoded string !
-        } else {
-            date_from = dayFrom + ". " + stringMonthFrom + ", " + hourTodayFrom + ":" + minTodayFrom + "   -";
+            if (stringMonthFrom.equals(stringMonthToday) && dayFrom.equals(dayToday)) {
+                date_from = "Today"; // TODO: remove hardcoded string !
+            } else {
+                date_from = dayFrom + ". " + stringMonthFrom + ", " + hourTodayFrom + ":" + minTodayFrom + "   -";
+            }
+
+            if (stringMonthTo.equals(stringMonthToday) && dayTo.equals(dayToday)) {
+                date_to = "Today"; // TODO: remove hardcoded string !
+            } else {
+                date_to = dayTo + ". " + stringMonthTo + ", " + hourTodayTo + ":" + minTodayTo;
+            }
+
+            ((TextView) view.findViewById(R.id.exibit_start)).setText(date_from);
+            ((TextView) view.findViewById(R.id.exibit_end)).setText(date_to);
         }
-
-        if (stringMonthTo.equals(stringMonthToday) && dayTo.equals(dayToday)){
-            date_to = "Today"; // TODO: remove hardcoded string !
-        } else {
-            date_to = dayTo + ". " + stringMonthTo + ", " + hourTodayTo + ":" + minTodayTo;
-        }
-
-        ((TextView) view.findViewById(R.id.exibit_start)).setText(date_from);
-        ((TextView) view.findViewById(R.id.exibit_end)).setText(date_to);
 
         if (checked_exibits.get(i).get(i1)) {
             ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);

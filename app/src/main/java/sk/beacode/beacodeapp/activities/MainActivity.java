@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 myProfileFragment.bind(user);
+                MainActivity.this.user = user;
             }
 
             @Override
@@ -242,6 +243,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAddInterest(Interest interest) {
         if (user != null) {
+            System.out.println(interest.getName());
             if (user.getInterests() != null) {
                 user.getInterests().add(0,interest);
             }
@@ -252,6 +254,7 @@ public class MainActivity extends AppCompatActivity
 
     @Background
     void onAddInterestBackground(Interest interest) {
+        System.out.println("interest");
         InterestApi interestApi = Manager.getInstance().getInterestApi();
         Call<Void> interestCall = interestApi.addInterest(interest);
         interestCall.enqueue(new Callback<Void>() {

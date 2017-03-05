@@ -21,7 +21,6 @@ import java.util.List;
 
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.activities.MainActivity;
-import sk.beacode.beacodeapp.activities.MainActivity_;
 import sk.beacode.beacodeapp.adapters.SearchEventsAdapter;
 import sk.beacode.beacodeapp.managers.EventManager;
 import sk.beacode.beacodeapp.models.Event;
