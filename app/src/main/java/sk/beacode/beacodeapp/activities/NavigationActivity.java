@@ -41,7 +41,9 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         beaconInterface.addBeaconListener(new BeaconListener() {
             @Override
             public void onAllBeacons(Collection<BeaconEntity> beacons) {
-
+                for (BeaconEntity entity : beacons) {
+                    System.out.println(entity.getUuid());
+                }
             }
 
             @Override

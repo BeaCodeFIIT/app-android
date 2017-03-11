@@ -1,14 +1,18 @@
 package sk.beacode.beacodeapp.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,9 +22,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.adapters.CategoryAdapter;
@@ -50,6 +56,9 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 
     @ViewById(R.id.exhibits)
     ExpandableListView mExhibits;
+
+    @ViewById(R.id.navigate_btn)
+    Button mNavigateBtn;
 
     public static Event event;
 
@@ -84,6 +93,7 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
             mAdapter = new CategoryAdapter(this, event.getCategories());
             mExhibits.setAdapter(mAdapter);
         }
+
         //        exhibits.bind(event.getExhibits());
 //        exhibits.setStartTourListener(new View.OnClickListener() {
 //            @Override
@@ -94,6 +104,13 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 //            }
 //        });
 //        exhibits.setExhibitOnClickListener(this);
+    }
+
+    @Click(R.id.navigate_btn)
+    void onNavigateClicked() {
+        NavigationActivity_.event = event;
+        Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
+        startActivity(intent);
     }
 
     void setPhotos() {

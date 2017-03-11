@@ -25,7 +25,7 @@ import sk.beacode.beacodeapp.models.Exhibit;
 
 public class CategoryAdapter extends BaseExpandableListAdapter {
 
-    private static final class GroupViewHolder {
+    public static final class GroupViewHolder {
 
         Category mItem;
         View mView;
@@ -37,7 +37,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    private static final class ChildViewHolder {
+    public static final class ChildViewHolder {
         Exhibit mItem;
         View mView;
         @BindView(R.id.name)
