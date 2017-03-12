@@ -14,11 +14,9 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-//apply plugin: 'android-apt'
-
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "sk.beacode.beacodeapp"
         minSdkVersion 19
@@ -108,7 +106,6 @@ dependencies {
 }
 
 android.applicationVariants.all { variant ->
-    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions.arguments =
-            ['androidManifestFile': variant.outputs[0]?.processResources?.manifestFile?.absolutePath,
-             'resourcePackageName': android.defaultConfig.applicationId]
+    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions
+            .arguments = ['androidManifestFile': variant.outputs[0]?.processResources?.manifestFile?.absolutePath]
 }

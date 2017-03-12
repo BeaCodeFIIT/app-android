@@ -33,14 +33,21 @@ public class GimbalBeacon extends BaseBeacon {
             beaconEntity.setUuid(b.getId1().toString());
             beaconEntity.setMajor(b.getId2().toInt());
             beaconEntity.setMinor(b.getId3().toInt());
+            System.out.println(b);
             allBeacons.add(beaconEntity);
         }
+
+        System.out.println("----------------------");
 
         return allBeacons;
     }
 
     @Override
     public BeaconEntity getNearestBeacon(Collection<org.altbeacon.beacon.Beacon> beacons) {
+        if (beacons.size() == 0) {
+            return null;
+        }
+
         org.altbeacon.beacon.Beacon closest = Collections.min(beacons, new Comparator<org.altbeacon.beacon.Beacon>() {
             @Override
             public int compare(org.altbeacon.beacon.Beacon beacon, org.altbeacon.beacon.Beacon t1) {

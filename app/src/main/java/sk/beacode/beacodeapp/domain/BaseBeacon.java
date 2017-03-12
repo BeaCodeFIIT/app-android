@@ -27,7 +27,7 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
         this.context = context;
         manager = BeaconManager.getInstanceForApplication(context);
         manager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(getLayout()));
-        //manager.bind(context);
+        manager.bind(this);
     }
 
     public BeaconManager getManager() {
