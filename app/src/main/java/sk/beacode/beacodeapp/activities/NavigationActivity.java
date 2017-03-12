@@ -59,7 +59,9 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                 }
 
                 List<BeaconEntity> beaconList = new ArrayList<>(beacons);
-                localization.updateUserPosition(beaconList);
+                if (beaconList.size() >= 2) {
+                    localization.updateUserPosition(beaconList);
+                }
                 System.out.println("x: " + localization.getUserPosition()[0]);
                 System.out.println("y: " + localization.getUserPosition()[1]);
             }

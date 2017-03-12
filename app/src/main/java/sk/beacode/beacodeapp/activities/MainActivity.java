@@ -47,7 +47,6 @@ import sk.beacode.beacodeapp.managers.UserApi;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.EventList;
-import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.ExhibitList;
 import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.Interest;
@@ -143,9 +142,11 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_my_profile: {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, myProfileFragment)
-                        .commit();
+                Intent intent = new Intent(this, NavigationActivity_.class);
+                startActivity(intent);
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.fragment_container, myProfileFragment)
+//                        .commit();
                 break;
             }
         }
