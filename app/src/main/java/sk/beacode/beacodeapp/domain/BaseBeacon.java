@@ -10,6 +10,7 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.altbeacon.beacon.service.ArmaRssiFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,8 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
 
     public BaseBeacon(Context context) {
         this.context = context;
+
+        BeaconManager.setRssiFilterImplClass(ArmaRssiFilter.class);
         manager = BeaconManager.getInstanceForApplication(context);
         manager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(getLayout()));
         manager.bind(this);

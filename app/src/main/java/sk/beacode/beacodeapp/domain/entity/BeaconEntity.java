@@ -9,8 +9,7 @@ public class BeaconEntity {
     private int major;
     private int minor;
     private double distance;
-    private double x;
-    private double y;
+    private PointEntity position;
 
     public String getUuid() {
         return uuid;
@@ -44,12 +43,11 @@ public class BeaconEntity {
         this.distance = distance;
     }
 
-    public void setPosition(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public PointEntity getPosition() {
+        return position;
     }
 
-    public double[] getPosition() {
-        return new double[] {x, y};
+    public void setPosition(PointEntity position) {
+        this.position = position;
     }
 }

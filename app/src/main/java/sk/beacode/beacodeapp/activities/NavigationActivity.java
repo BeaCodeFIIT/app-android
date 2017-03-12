@@ -20,6 +20,7 @@ import sk.beacode.beacodeapp.domain.BeaconFactory;
 import sk.beacode.beacodeapp.domain.BeaconListener;
 import sk.beacode.beacodeapp.domain.Localization;
 import sk.beacode.beacodeapp.domain.entity.BeaconEntity;
+import sk.beacode.beacodeapp.domain.entity.PointEntity;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
@@ -36,34 +37,37 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Localization localization = Localization.getInstance();
+        final Localization localization = Localization.getInstance();
 
         Beacon beaconInterface = BeaconFactory.getBeacon(this, BeaconFactory.BeaconType.GIMBAL);
         beaconInterface.addBeaconListener(new BeaconListener() {
             @Override
             public void onAllBeacons(Collection<BeaconEntity> beacons) {
                 for (BeaconEntity entity : beacons) {
-                    double x = 0;
-                    double y = 0;
+                    double x;
+                    double y;
                     if (entity.getMinor() == 6) {
-                        x = 0.6;
+                        x = 0.60;
                         y = 0;
                     } else if (entity.getMinor() == 5) {
-                        x = 3.45;
+                        x = 0.345;
                         y = 0;
                     } else if (entity.getMinor() == 3) {
-                        x = 3.45;
-                        y = 3.45;
+                        x = 0.345;
+                        y = 0.345;
+                    } else {
+                        x = 0;
+                        y = 0.345;
                     }
-                    entity.setPosition(x, y);
+                    entity.setPosition(new PointEntity(x, y));
                 }
 
                 List<BeaconEntity> beaconList = new ArrayList<>(beacons);
                 if (beaconList.size() >= 2) {
                     localization.updateUserPosition(beaconList);
                 }
-                System.out.println("x: " + localization.getUserPosition()[0]);
-                System.out.println("y: " + localization.getUserPosition()[1]);
+                System.out.println("x: " + localization.getUserPosition().getX());
+                System.out.println("y: " + localization.getUserPosition().getY());
             }
 
             @Override

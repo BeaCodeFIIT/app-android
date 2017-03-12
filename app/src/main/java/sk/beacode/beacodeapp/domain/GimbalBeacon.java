@@ -1,10 +1,7 @@
 package sk.beacode.beacodeapp.domain;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 
-import org.altbeacon.beacon.*;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.service.RangedBeacon;
 
@@ -28,12 +25,25 @@ public class GimbalBeacon extends BaseBeacon {
     public Collection<BeaconEntity> getAllBeaconsInRange(Collection<org.altbeacon.beacon.Beacon> beacons) {
         List<BeaconEntity> allBeacons = new ArrayList<>(beacons.size());
         for (Beacon b : beacons) {
+            System.out.println("id: " + b.getId3().toInt() + ", rssi: " + b.getRssi());
             BeaconEntity beaconEntity = new BeaconEntity();
+
+//            double rd0 = -74.0;
+//            double n = 2.25;
+//            double exp = (b.getTxPower() - b.getRssi()) / (10.0 * n);
+//            System.out.println((b.getRssi() - rd0));
+//            System.out.println((10.0 * n));
+//            double d = Math.pow(10.0, exp);
+//            System.out.println("DDDDDDDDDDDDDDDDD:" + d);
+//            beaconEntity.setDistance(d);
+
+//            Beacon.setDistanceCalculator(new CurveFittedDistanceCalculator(1.33, 5.68, 0.0));
+//            System.out.println(Beacon.getDistanceCalculator());
+
             beaconEntity.setDistance(b.getDistance());
             beaconEntity.setUuid(b.getId1().toString());
             beaconEntity.setMajor(b.getId2().toInt());
             beaconEntity.setMinor(b.getId3().toInt());
-            System.out.println(b);
             allBeacons.add(beaconEntity);
         }
 

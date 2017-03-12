@@ -9,6 +9,8 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -24,9 +26,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
+//        jackOptions {
+//            enabled true
+//        }
     }
     buildTypes {
         debug {
@@ -46,11 +48,11 @@ android {
     lintOptions {
         abortOnError false
     }
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
-
-    }
+//    compileOptions {
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//
+//    }
 }
 
 dependencies {
@@ -69,16 +71,16 @@ dependencies {
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
     compile 'org.androidannotations:androidannotations-api:4.1.0'
-    annotationProcessor 'org.androidannotations:androidannotations:4.1.0'
+    apt 'org.androidannotations:androidannotations:4.1.0'
     compile "org.androidannotations:rest-spring-api:4.1.0"
-    annotationProcessor "org.androidannotations:rest-spring:4.1.0"
+    apt "org.androidannotations:rest-spring:4.1.0"
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.4'
 
-    compile 'org.altbeacon:android-beacon-library:2.9.1'
-    compile 'com.lemmingapex.trilateration:trilateration:1.0.1'
+    compile 'org.altbeacon:android-beacon-library:2.9.2'
+//    compile 'com.lemmingapex.trilateration:trilateration:1.0.1'
 
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
@@ -105,7 +107,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
 }
 
-android.applicationVariants.all { variant ->
-    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions
-            .arguments = ['androidManifestFile': variant.outputs[0]?.processResources?.manifestFile?.absolutePath]
-}
+//android.applicationVariants.all { variant ->
+//    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions
+//            .arguments = ['androidManifestFile': variant.outputs[0]?.processResources?.manifestFile?.absolutePath]
+//}
