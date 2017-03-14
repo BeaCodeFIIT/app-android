@@ -142,11 +142,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_my_profile: {
-                Intent intent = new Intent(this, NavigationActivity_.class);
-                startActivity(intent);
-//                getFragmentManager().beginTransaction()
-//                        .replace(R.id.fragment_container, myProfileFragment)
-//                        .commit();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, myProfileFragment)
+                        .commit();
                 break;
             }
         }

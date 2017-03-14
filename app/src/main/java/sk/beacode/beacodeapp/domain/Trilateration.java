@@ -46,6 +46,46 @@ public class Trilateration {
 		P3[0] = p3.getX();
 		P3[1] = p3.getY();
 
+		// Ked sa X rovnaju
+//		if (P1[1] == P2[1] && P1[1] == P3[1])  {
+//			double totalD = d1 + d2;
+//			double positionD = Math.abs(p2.getX() - p2.getX());
+//
+//			double x = (d1 / totalD) * positionD;
+//
+//			if (p1.getX() > p2.getX()) {
+//				x = p1.getX() - x;
+//			} else {
+//				x = p1.getX() + x;
+//			}
+//
+//			double y = p1.getY();
+//
+//			retorno.setX(x);
+//			retorno.setY(y);
+//			return retorno;
+//		}
+//
+//		// Ked sa Y rovnaju
+//		if (P1[0] == P2[0] && P1[0] == P3[0])  {
+//			double totalD = d1 + d2;
+//			double positionD = Math.abs(p2.getY() - p2.getY());
+//
+//			double y = (d1 / totalD) * positionD;
+//
+//			if (p1.getY() > p2.getY()) {
+//				y = p1.getY() - y;
+//			} else {
+//				y = p1.getY() + y;
+//			}
+//
+//			double x = p1.getX();
+//
+//			retorno.setX(x);
+//			retorno.setY(y);
+//			return retorno;
+//		}
+
 //		//TRANSFORMA O VALOR DE METROS PARA A UNIDADE DO MAPA
 //		//DISTANCIA ENTRE O PONTO 1 E A MINHA LOCALIZACAO
 //		d1 = (d1 / 100000);

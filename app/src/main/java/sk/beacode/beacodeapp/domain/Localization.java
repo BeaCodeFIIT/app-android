@@ -8,9 +8,6 @@ import java.util.List;
 import sk.beacode.beacodeapp.domain.entity.BeaconEntity;
 import sk.beacode.beacodeapp.domain.entity.PointEntity;
 
-/**
- * Created by Sandra on 11.03.2017.
- */
 
 public class Localization {
 

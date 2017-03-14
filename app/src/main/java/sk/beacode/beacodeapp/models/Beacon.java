@@ -4,9 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Beacon {
     private int id;
+    @JsonProperty("UUID")
     private String uuid;
     private int major;
     private int minor;
+    @JsonProperty("coorX")
+    private double x;
+    @JsonProperty("coorY")
+    private double y;
+    private int exhibitId;
+
 
     public int getId() {
         return id;
@@ -20,7 +27,6 @@ public class Beacon {
         return uuid;
     }
 
-    @JsonProperty("UUID")
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -39,5 +45,29 @@ public class Beacon {
 
     public void setMinor(int minor) {
         this.minor = minor;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public int getExhibitId() {
+        return exhibitId;
+    }
+
+    public void setExhibitId(int exhibitId) {
+        this.exhibitId = exhibitId;
     }
 }

@@ -50,14 +50,14 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                         x = 0.60;
                         y = 0;
                     } else if (entity.getMinor() == 5) {
-                        x = 0.345;
+                        x = 3.45;
                         y = 0;
                     } else if (entity.getMinor() == 3) {
-                        x = 0.345;
-                        y = 0.345;
+                        x = 3.45;
+                        y = 3.45;
                     } else {
                         x = 0;
-                        y = 0.345;
+                        y = 3.45;
                     }
                     entity.setPosition(new PointEntity(x, y));
                 }

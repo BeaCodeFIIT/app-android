@@ -21,6 +21,8 @@ public class Event implements SearchSuggestion, Parcelable {
     private List<Image> images;
     private List<Exhibit> exhibits;
     private List<Category> categories;
+    private List<Beacon> beacons;
+    private Image map;
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
         @Override
@@ -146,5 +148,21 @@ public class Event implements SearchSuggestion, Parcelable {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public List<Beacon> getBeacons() {
+        return beacons;
+    }
+
+    public void setBeacons(List<Beacon> beacons) {
+        this.beacons = beacons;
+    }
+
+    public Image getMap() {
+        return map;
+    }
+
+    public void setMap(Image map) {
+        this.map = map;
     }
 }
