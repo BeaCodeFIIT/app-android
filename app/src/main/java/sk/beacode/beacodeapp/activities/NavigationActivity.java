@@ -36,6 +36,7 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_navigation);
 
         final Localization localization = Localization.getInstance();
 
@@ -43,31 +44,40 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         beaconInterface.addBeaconListener(new BeaconListener() {
             @Override
             public void onAllBeacons(Collection<BeaconEntity> beacons) {
-                for (BeaconEntity entity : beacons) {
+                System.out.println("XXX" + beacons.size());
+                for (BeaconEntity e : beacons) {
+                    sk.beacode.beacodeapp.models.Beacon b = event.getBeacon(e.getMinor());
                     double x;
                     double y;
-                    if (entity.getMinor() == 6) {
+                    if (b != null) {
+                        System.out.println("XXX" + b.getMinor());
+                        x = b.getX();
+                        y = b.getY();
+                    } else if (e.getMinor() == 6) {
                         x = 0.60;
                         y = 0;
-                    } else if (entity.getMinor() == 5) {
+                    } else if (e.getMinor() == 5) {
                         x = 3.45;
                         y = 0;
-                    } else if (entity.getMinor() == 3) {
+                    } else if (e.getMinor() == 3) {
                         x = 3.45;
                         y = 3.45;
                     } else {
                         x = 0;
                         y = 3.45;
                     }
-                    entity.setPosition(new PointEntity(x, y));
+                    e.setPosition(new PointEntity(x, y));
                 }
 
                 List<BeaconEntity> beaconList = new ArrayList<>(beacons);
                 if (beaconList.size() >= 2) {
                     localization.updateUserPosition(beaconList);
                 }
-                System.out.println("x: " + localization.getUserPosition().getX());
-                System.out.println("y: " + localization.getUserPosition().getY());
+
+                PointEntity userPosition = localization.getUserPosition();
+                System.out.println("x: " + userPosition.getX());
+                System.out.println("y: " + userPosition.getY());
+                updatePosition(userPosition.getX(), userPosition.getY());
             }
 
             @Override
@@ -162,6 +172,14 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         DecimalFormat df = new DecimalFormat("##.#");
         TextView distanceView = (TextView) findViewById(R.id.distance);
         distanceView.setText(id + ":  " + df.format(distance) + "m");
+    }
+
+    @UiThread
+    void updatePosition(double x, double y) {
+        TextView textX = (TextView) findViewById(R.id.x);
+        TextView textY = (TextView) findViewById(R.id.y);
+        textX.setText(Double.toString(x));
+        textY.setText(Double.toString(y));
     }
 
     @Override

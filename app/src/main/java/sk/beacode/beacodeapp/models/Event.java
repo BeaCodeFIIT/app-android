@@ -165,4 +165,13 @@ public class Event implements SearchSuggestion, Parcelable {
     public void setMap(Image map) {
         this.map = map;
     }
+
+    public Beacon getBeacon(int minor) {
+        for (Beacon beacon : beacons) {
+            if (beacon.getMinor() == minor) {
+                return beacon;
+            }
+        }
+        return null;
+    }
 }

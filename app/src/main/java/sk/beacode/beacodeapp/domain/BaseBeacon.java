@@ -26,7 +26,7 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
 
     public BaseBeacon(Context context) {
         this.context = context;
-        
+
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
 //        RunningAverageRssiFilter.setSampleExpirationMilliseconds(1000);
         manager = BeaconManager.getInstanceForApplication(context);
