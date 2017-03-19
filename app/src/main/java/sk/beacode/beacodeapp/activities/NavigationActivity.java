@@ -1,19 +1,38 @@
 package sk.beacode.beacodeapp.activities;
 
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.caverock.androidsvg.SVG;
+import com.caverock.androidsvg.SVGParseException;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
-import java.text.DecimalFormat;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import butterknife.BindView;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.domain.Beacon;
 import sk.beacode.beacodeapp.domain.BeaconFactory;
@@ -24,6 +43,10 @@ import sk.beacode.beacodeapp.domain.entity.PointEntity;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.models.Pin;
+import sk.beacode.beacodeapp.models.Pixel;
+import sk.beacode.beacodeapp.models.Point;
+import sk.beacode.beacodeapp.views.PinView;
 
 
 @EActivity(R.layout.activity_navigation)
@@ -33,10 +56,21 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
     private boolean eventDialogOpened = false;
 
+    @BindView(R.id.map)
+    ImageView mapView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+        //ButterKnife.bind(this);
+
+        downloadMap(event.getMap().getUri());
+
+        // Any implementation of ImageView can be used!
+//        ImageView imageView = (ImageView) findViewById(R.id.map);
+//
+//         mAttacher = new PhotoViewAttacher(imageView);
 
         final Localization localization = Localization.getInstance();
 
@@ -168,22 +202,82 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
     }
 
     @UiThread
-    void updateDistance(int id, double distance) {
-        DecimalFormat df = new DecimalFormat("##.#");
-        TextView distanceView = (TextView) findViewById(R.id.distance);
-        distanceView.setText(id + ":  " + df.format(distance) + "m");
-    }
-
-    @UiThread
     void updatePosition(double x, double y) {
+        PinView mapView = (PinView) findViewById(R.id.map);
+        mapView.setUserPosition(new Point(x, y));
+
         TextView textX = (TextView) findViewById(R.id.x);
         TextView textY = (TextView) findViewById(R.id.y);
         textX.setText(Double.toString(x));
         textY.setText(Double.toString(y));
+
     }
 
     @Override
     public void onExhibitionDetailClose() {
         eventDialogOpened = false;
     }
+
+    @Background
+    public void downloadMap(Uri mapUri) {
+        try {
+            URL url = new URL(mapUri.toString());
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            BufferedReader br = new BufferedReader( new InputStreamReader(in));
+
+            StringBuilder sb = new StringBuilder();
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            br.close();
+
+            SVG svg = SVG.getFromString(sb.toString());
+
+            showMap(svg);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SVGParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @UiThread
+    public void showMap(SVG map) {
+        PinView mapView = (PinView) findViewById(R.id.map);
+
+        Bitmap newBM = Bitmap.createBitmap((int) Math.ceil(map.getDocumentWidth()),
+                                           (int) Math.ceil(map.getDocumentHeight()),
+                                           Bitmap.Config.ARGB_8888);
+
+        Canvas bmcanvas = new Canvas(newBM);
+
+        bmcanvas.drawRGB(255, 255, 255);
+
+        map.renderToCanvas(bmcanvas);
+
+        mapView.setImage(ImageSource.bitmap(newBM));
+        mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        for (sk.beacode.beacodeapp.models.Beacon beacon : event.getBeacons()) {
+            addPin(beacon.getX(), beacon.getY(), Pin.Color.BLUE);
+        }
+
+    }
+
+    public void addPin(double x, double y, Pin.Color color) {
+        PinView mapView = (PinView) findViewById(R.id.map);
+        mapView.addPin(new Point(x, y), color);
+    }
+
+
+
 }
