@@ -40,7 +40,13 @@ public class GimbalBeacon extends BaseBeacon {
 //            Beacon.setDistanceCalculator(new CurveFittedDistanceCalculator(1.33, 5.68, 0.0));
 //            System.out.println(Beacon.getDistanceCalculator());
 
-            beaconEntity.setDistance(b.getDistance());
+            double dd0 = 1.0;
+            double d0_rssi = -62.0;
+            double n = 4.0;
+            double rssi = b.getRssi();
+            double distance = dd0 * Math.pow(10.0, (rssi - d0_rssi) / 10.0 * n);
+
+            beaconEntity.setDistance(distance);
             beaconEntity.setUuid(b.getId1().toString());
             beaconEntity.setMajor(b.getId2().toInt());
             beaconEntity.setMinor(b.getId3().toInt());

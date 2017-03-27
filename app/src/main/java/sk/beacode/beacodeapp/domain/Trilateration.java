@@ -1,13 +1,30 @@
 package sk.beacode.beacodeapp.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.domain.entity.PointEntity;
 
 public class Trilateration {
 
+	private static List<PointEntity> distances = new ArrayList<>();
+
 	@DebugLog
 	public static PointEntity getLocation(PointEntity p1, PointEntity p2, PointEntity p3,
 	                                      double d1, double d2, double d3) {
+
+//		p1.setX(0);
+//		p1.setY(0);
+//		p2.setX(100);
+//		p2.setY(0);
+//		p3.setX(100);
+//		p3.setY(100);
+//
+//		d1 = 100;
+//		d2 = 102.59;
+//		d3 = 80.78;
+
 		System.out.println("getLocation====================================");
 		System.out.println(d1);
 		System.out.println(d2);
@@ -151,6 +168,21 @@ public class Trilateration {
 		triptx = t1 + t2 + t3;
 		retorno.setY(triptx);
 
-		return retorno;
+		if (distances.size() >= 20) {
+			distances.remove(0);
+		}
+
+		distances.add(retorno);
+
+		double x = 0;
+		double y = 0;
+		for (PointEntity p : distances) {
+			x += p.getX();
+			y += p.getY();
+		}
+		x /= distances.size();
+		y /= distances.size();
+
+		return new PointEntity(x, y);
 	}
 }

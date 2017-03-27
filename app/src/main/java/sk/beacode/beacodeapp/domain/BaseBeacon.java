@@ -10,7 +10,6 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
-import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +25,8 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
 
     public BaseBeacon(Context context) {
         this.context = context;
-
-        BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
-//        RunningAverageRssiFilter.setSampleExpirationMilliseconds(1000);
+//        RunningMaxRssiFilter.setSampleExpirationMilliseconds(1000);
+        BeaconManager.setRssiFilterImplClass(RunningMaxRssiFilter.class);
         manager = BeaconManager.getInstanceForApplication(context);
 //        manager.setForegroundScanPeriod(1000);
 //        manager.setForegroundBetweenScanPeriod(0);
@@ -77,5 +75,9 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
     @Override
     public void addBeaconListener(BeaconListener listener) {
         listeners.add(listener);
+    }
+
+    public void unbind() {
+        manager.unbind(this);
     }
 }
