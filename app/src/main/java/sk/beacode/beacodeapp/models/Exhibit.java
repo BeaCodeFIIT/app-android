@@ -84,6 +84,9 @@ public class Exhibit implements Parcelable {
     }
 
     public Image getMainImage() {
+        if (images == null) {
+            return null;
+        }
         return images.get(0);
     }
 

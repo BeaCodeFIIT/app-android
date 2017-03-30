@@ -11,6 +11,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,9 +21,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.models.Image;
 
 public class CategoryAdapter extends BaseExpandableListAdapter {
 
@@ -29,7 +33,8 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
         Category mItem;
         View mView;
-        @BindView(R.id.name) TextView mName;
+        @BindView(R.id.name)
+        TextView mName;
 
         GroupViewHolder(View view) {
             mView = view;
@@ -65,7 +70,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     public CategoryAdapter(Context context, List<Category> items) {
         mItems = items;
         mInflater = LayoutInflater.from(context);
-        for (int j=0; j < mItems.size(); j++) {
+        for (int j = 0; j < mItems.size(); j++) {
             List<Boolean> checked = new ArrayList<Boolean>(Arrays.asList(new Boolean[mItems.get(j).getExhibits().size()]));
             Collections.fill(checked, Boolean.FALSE);
             checked_exibits.add(checked);
@@ -127,6 +132,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    @DebugLog
     public View getChildView(final int i, final int i1, boolean b, View view, ViewGroup viewGroup) {
         final ChildViewHolder holder;
 
@@ -139,15 +145,15 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         }
 
         final View finalView = view;
-        ((CheckBox)view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (((CheckBox) finalView.findViewById(R.id.checkbox)).isChecked()) {
-                        checked_exibits.get(i).set(i1, true);
-                    } else {
-                        checked_exibits.get(i).set(i1, false);
-                    }
+        ((CheckBox) view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (((CheckBox) finalView.findViewById(R.id.checkbox)).isChecked()) {
+                    checked_exibits.get(i).set(i1, true);
+                } else {
+                    checked_exibits.get(i).set(i1, false);
                 }
-            });
+            }
+        });
 
         holder.mItem = mItems.get(i).getExhibits().get(i1);
         if (holder.mItem.getStart() != null && holder.mItem.getEnd() != null) {
@@ -188,6 +194,14 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);
         } else {
             ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(false);
+        }
+
+        ((TextView) view.findViewById(R.id.description)).setText(holder.mItem.getDescription());
+        ((TextView) view.findViewById(R.id.name)).setText(holder.mItem.getName());
+        Image mainImage = holder.mItem.getMainImage();
+        if (mainImage != null) {
+            ImageView photoView = (ImageView) view.findViewById(R.id.exhibit_image);
+            Glide.with(photoView.getContext()).load(mainImage.getUri()).into(photoView);
         }
 
         return view;

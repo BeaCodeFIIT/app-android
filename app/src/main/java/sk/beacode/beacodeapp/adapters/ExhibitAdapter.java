@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 
 import org.androidannotations.annotations.EBean;
 
+import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListItemView;
 import sk.beacode.beacodeapp.views.ExhibitListItemView_;
@@ -23,6 +24,7 @@ public class ExhibitAdapter extends ArrayAdapter<Exhibit> {
 
     @NonNull
     @Override
+    @DebugLog
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Exhibit exhibit = getItem(position);
 
