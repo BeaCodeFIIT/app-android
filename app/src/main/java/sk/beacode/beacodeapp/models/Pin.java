@@ -22,6 +22,7 @@ public class Pin {
     private PointF location;
     private Color color;
     private Bitmap bitmap;
+    private int minor;
 
     public PointF getLocation() {
         return location;
@@ -59,5 +60,13 @@ public class Pin {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public void setMinor(int minor) {
+        this.minor = minor;
     }
 }

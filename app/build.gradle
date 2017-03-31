@@ -103,4 +103,6 @@ dependencies {
     compile 'com.github.BigBadaboom:androidsvg:Release_1.2.2-beta-1'
 
     compile 'mobi.inthepocket.android:ibeaconscanner:1.2.1'
+
+    compile 'com.afollestad.material-dialogs:core:0.9.4.2'
 }

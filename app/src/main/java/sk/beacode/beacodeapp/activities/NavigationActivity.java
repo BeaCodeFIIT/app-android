@@ -3,15 +3,19 @@ package sk.beacode.beacodeapp.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -42,6 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
+import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.domain.Localization;
 import sk.beacode.beacodeapp.domain.Trilateration;
@@ -51,7 +56,7 @@ import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.Pin;
-import sk.beacode.beacodeapp.models.Point;
+import sk.beacode.beacodeapp.models.Pixel;
 import sk.beacode.beacodeapp.views.PinView;
 
 
@@ -61,6 +66,7 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
     public static Event event;
 
     private boolean eventDialogOpened = false;
+    private PointEntity lastLocation;
 
 //    private Beacon beaconInterface;
 
@@ -76,22 +82,25 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         setContentView(R.layout.activity_navigation);
         //ButterKnife.bind(this);
 
+
+
         downloadMap(event.getMap().getUri());
 
         //RunningAverageRssiFilter.setSampleExpirationMilliseconds(100);
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
-        beaconManager.setBackgroundScanPeriod(100);
+        beaconManager.setBackgroundScanPeriod(200);
         beaconManager.setBackgroundBetweenScanPeriod(0);
-        beaconManager.setForegroundScanPeriod(100);
+        beaconManager.setForegroundScanPeriod(200);
         beaconManager.setForegroundBetweenScanPeriod(0);
-        try {
-            beaconManager.updateScanPeriods();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
         beaconManager.bind(this);
+//
+//        try {
+//            beaconManager.updateScanPeriods();
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
 
         // Any implementation of ImageView can be used!
 //        ImageView imageView = (ImageView) findViewById(R.id.map);
@@ -230,7 +239,19 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
     @UiThread
     void updatePosition(double x, double y) {
         PinView mapView = (PinView) findViewById(R.id.map);
-        mapView.setUserPosition(new Point(x, y));
+        if (x < 0) {
+            x = 0;
+        }
+        if (x > 3962) {
+            x = 3962;
+        }
+        if (y < 0) {
+            y = 200;
+        }
+        if (y > 587) {
+            y = 587;
+        }
+        mapView.setUserPosition(new Pixel((int) x, (int) y));
 
         TextView textX = (TextView) findViewById(R.id.x);
         TextView textY = (TextView) findViewById(R.id.y);
@@ -278,7 +299,47 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
     @UiThread
     public void showMap(SVG map) {
-        PinView mapView = (PinView) findViewById(R.id.map);
+        final PinView mapView = (PinView) findViewById(R.id.map);
+
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (mapView.isReady()) {
+                    PointF sCoord = mapView.viewToSourceCoord(e.getX(), e.getY());
+                    for (Pin pin : mapView.getPins()) {
+                        if (pin.getLocation().x >= sCoord.x - 100 && pin.getLocation().x <= sCoord.x + 100
+                                && pin.getLocation().y >= sCoord.y - 100 && pin.getLocation().y <= sCoord.y + 100) {
+                            Integer exhibitId = event.getBeacon(pin.getMinor()).getExhibitId();
+                            if (exhibitId != null) {
+                                for (Exhibit ex : event.getExhibits()) {
+                                    if (ex.getId() == exhibitId) {
+                                        new MaterialDialog.Builder(NavigationActivity.this)
+                                                .title(ex.getName())
+                                                .content(ex.getDescription())
+                                                .show();
+                                        break;
+                                    }
+                                }
+                            } else {
+                                new MaterialDialog.Builder(NavigationActivity.this)
+                                        .title(Integer.toString(pin.getMinor()))
+                                        .content("No exhibit for this beacon")
+                                        .show();
+                            }
+                            break;
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
+        mapView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
 
         Bitmap newBM = Bitmap.createBitmap((int) Math.ceil(map.getDocumentWidth()),
                                            (int) Math.ceil(map.getDocumentHeight()),
@@ -294,14 +355,15 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         for (sk.beacode.beacodeapp.models.Beacon beacon : event.getBeacons()) {
-            addPin(beacon.getX(), beacon.getY(), Pin.Color.BLUE);
+            addPin(beacon.getX(), beacon.getY(), Pin.Color.BLUE, beacon.getMinor());
         }
 
     }
 
-    public void addPin(double x, double y, Pin.Color color) {
+    @DebugLog
+    public void addPin(double x, double y, Pin.Color color, int minor) {
         PinView mapView = (PinView) findViewById(R.id.map);
-        mapView.addPin(new Point(x, y), color);
+        mapView.addPin(new Pixel((int) (x / 1.75), (int) (y / 1.75)), color, minor);
     }
 
     @Override
@@ -312,10 +374,17 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
     @Override
     public void onBeaconServiceConnect() {
+        try {
+            beaconManager.updateScanPeriods();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
+            @DebugLog
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 List<BeaconEntity> sortedBeacons = new ArrayList<>();
+                System.out.println(sortedBeacons.size());
                 for (Beacon b : beacons) {
                     double d0_rssi = -74;
                     double n = 4;
@@ -328,21 +397,28 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                     beaconEntity.setMinor(b.getId3().toInt());
                     beaconEntity.setDistance(b.getDistance());
 
+                    sk.beacode.beacodeapp.models.Beacon beaconApi = event.getBeacon(beaconEntity.getMinor());
                     double x;
                     double y;
-                    if (beaconEntity.getMinor() == 6) {
-                        x = 0.60;
-                        y = 0;
-                    } else if (beaconEntity.getMinor() == 5) {
-                        x = 3.45;
-                        y = 0;
-                    } else if (beaconEntity.getMinor() == 3) {
-                        x = 3.45;
-                        y = 3.45;
+                    if (beaconApi != null) {
+                        x = beaconApi.getX() / 175;
+                        y = beaconApi.getY() / 175;
                     } else {
-                        x = 0;
-                        y = 3.45;
+                        continue;
                     }
+//                    } else if (beaconEntity.getMinor() == 6) {
+//                        x = 0.60;
+//                        y = 0;
+//                    } else if (beaconEntity.getMinor() == 5) {
+//                        x = 3.45;
+//                        y = 0;
+//                    } else if (beaconEntity.getMinor() == 3) {
+//                        x = 3.45;
+//                        y = 3.45;
+//                    } else {
+//                        x = 0;
+//                        y = 3.45;
+//                    }
 
                     beaconEntity.setPosition(new PointEntity(x, y));
                     sortedBeacons.add(beaconEntity);
@@ -366,8 +442,15 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                 PointEntity position = Trilateration.getLocation(b0.getPosition(), b1.getPosition(), b2.getPosition(),
                         b0.getDistance(), b1.getDistance(), b2.getDistance());
 
-                System.out.println(String.format("position: x = %f, y = %f", position.getX(), position.getY()));
-                updatePosition(position.getX(), position.getY());
+                if ((Double.isNaN(position.getX()) || Double.isInfinite(position.getX())
+                        || Double.isNaN(position.getY()) || Double.isInfinite(position.getY())) && lastLocation != null) {
+                    position = lastLocation;
+                }
+
+                lastLocation = position;
+
+                System.out.println(String.format("position: x = %f, y = %f", position.getX() * 100, position.getY() * 100));
+                updatePosition(position.getX() * 100, position.getY() * 100);
             }
         });
 

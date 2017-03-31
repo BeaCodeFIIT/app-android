@@ -12,7 +12,7 @@ public class Beacon {
     private double x;
     @JsonProperty("coorY")
     private double y;
-    private int exhibitId;
+    private Integer exhibitId;
 
 
     public int getId() {
@@ -63,11 +63,11 @@ public class Beacon {
         this.y = y;
     }
 
-    public int getExhibitId() {
+    public Integer getExhibitId() {
         return exhibitId;
     }
 
-    public void setExhibitId(int exhibitId) {
+    public void setExhibitId(Integer exhibitId) {
         this.exhibitId = exhibitId;
     }
 }

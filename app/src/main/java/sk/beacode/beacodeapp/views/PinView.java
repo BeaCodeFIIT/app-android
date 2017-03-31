@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
@@ -29,12 +30,17 @@ public class PinView extends SubsamplingScaleImageView {
         initialise();
     }
 
-    private Pixel pointToPixel(Point point) {
-        return new Pixel().setX((int) Math.ceil(point.getX() * 56 + 222)).setY((int) Math.ceil((729 - (point.getY() * 37))));
+    @NonNull
+    private Point pixelToPoint(Pixel pixel) {
+        return new Point(pixel.getX() / 100.0, pixel.getY() / 100.0);
     }
 
-    public void setUserPosition(Point location) {
-        Pixel pixel = pointToPixel(location);
+    private Pixel pointToPixel(Point point) {
+        return new Pixel((int) Math.ceil(point.getX() * 56 + 222), (int) Math.ceil((729 - (point.getY() * 37))));
+    }
+
+    public void setUserPosition(Pixel pixel) {
+        //Pixel pixel = pointToPixel(location);
 
         userPosition = new Pin();
         userPosition.setColor(Pin.Color.RED);
@@ -44,12 +50,11 @@ public class PinView extends SubsamplingScaleImageView {
         invalidate();
     }
 
-    public void addPin(Point location, Pin.Color color) {
-        Pixel pixel = pointToPixel(location);
-
+    public void addPin(Pixel location, Pin.Color color, int minor) {
         Pin pin = new Pin();
         pin.setColor(color);
-        pin.setLocation(new PointF(pixel.getX(), pixel.getY()));
+        pin.setLocation(new PointF(location.getX(), location.getY()));
+        pin.setMinor(minor);
         pins.add(pin);
 
         initialise();
