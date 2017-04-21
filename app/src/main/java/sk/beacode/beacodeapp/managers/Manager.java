@@ -67,4 +67,8 @@ public class Manager {
     public UserApi getUserApi () {
         return retrofit.create(UserApi.class);
     }
+
+    public SelectedExhibitsApi getSelectedExhibitsApi() {
+        return retrofit.create(SelectedExhibitsApi.class);
+    }
 }

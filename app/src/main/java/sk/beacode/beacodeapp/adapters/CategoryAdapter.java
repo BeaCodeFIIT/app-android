@@ -13,19 +13,25 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hugo.weaving.DebugLog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import sk.beacode.beacodeapp.R;
+import sk.beacode.beacodeapp.activities.EventActivity_;
+import sk.beacode.beacodeapp.managers.Manager;
+import sk.beacode.beacodeapp.managers.SelectedExhibitsApi;
+import sk.beacode.beacodeapp.models.AddSelectedExhibit;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.Image;
+import sk.beacode.beacodeapp.models.SelectedExhibit;
+import sk.beacode.beacodeapp.models.SelectedExhibitList;
 
 public class CategoryAdapter extends BaseExpandableListAdapter {
 
@@ -59,22 +65,44 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         ChildViewHolder(View view) {
             mView = view;
             ButterKnife.bind(this, view);
-
         }
     }
 
     private final List<Category> mItems;
     private final LayoutInflater mInflater;
-    private List<List<Boolean>> checked_exibits = new ArrayList<>();
+    //private List<List<Boolean>> checked_exibits = new ArrayList<>();
+    //private List<Exhibit> checkedExhibitsApi = new ArrayList<>();
 
     public CategoryAdapter(Context context, List<Category> items) {
         mItems = items;
         mInflater = LayoutInflater.from(context);
-        for (int j = 0; j < mItems.size(); j++) {
-            List<Boolean> checked = new ArrayList<Boolean>(Arrays.asList(new Boolean[mItems.get(j).getExhibits().size()]));
-            Collections.fill(checked, Boolean.FALSE);
-            checked_exibits.add(checked);
-        }
+
+//        SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
+//
+//        for (Category c : items) {
+//            Call<ExhibitList> call = api.getSelectedExhibits(c.getId());
+//            call.enqueue(new Callback<ExhibitList>() {
+//                @DebugLog
+//                @Override
+//                public void onResponse(Call<ExhibitList> call, Response<ExhibitList> response) {
+//                    for (Exhibit e : response.body().getExhibits()) {
+//                        checkedExhibitsApi.add(e);
+//                    }
+//                    notifyDataSetChanged();
+//                }
+//
+//                @DebugLog
+//                @Override
+//                public void onFailure(Call<ExhibitList> call, Throwable t) {
+//
+//                }
+//            });
+//        }
+//        for (int j = 0; j < mItems.size(); j++) {
+//            List<Boolean> checked = new ArrayList<>(Arrays.asList(new Boolean[mItems.get(j).getExhibits().size()]));
+//            Collections.fill(checked, Boolean.FALSE);
+//            checked_exibits.add(checked);
+//        }
     }
 
     @Override
@@ -145,15 +173,15 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         }
 
         final View finalView = view;
-        ((CheckBox) view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (((CheckBox) finalView.findViewById(R.id.checkbox)).isChecked()) {
-                    checked_exibits.get(i).set(i1, true);
-                } else {
-                    checked_exibits.get(i).set(i1, false);
-                }
-            }
-        });
+//        ((CheckBox) view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (((CheckBox) finalView.findViewById(R.id.checkbox)).isChecked()) {
+//                    checked_exibits.get(i).set(i1, true);
+//                } else {
+//                    checked_exibits.get(i).set(i1, false);
+//                }
+//            }
+//        });
 
         holder.mItem = mItems.get(i).getExhibits().get(i1);
         if (holder.mItem.getStart() != null && holder.mItem.getEnd() != null) {
@@ -175,13 +203,13 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             String date_from, date_to;
 
             if (stringMonthFrom.equals(stringMonthToday) && dayFrom.equals(dayToday)) {
-                date_from = "Today"; // TODO: remove hardcoded string !
+                date_from = "Today";
             } else {
                 date_from = dayFrom + ". " + stringMonthFrom + ", " + hourTodayFrom + ":" + minTodayFrom + "   -";
             }
 
             if (stringMonthTo.equals(stringMonthToday) && dayTo.equals(dayToday)) {
-                date_to = "Today"; // TODO: remove hardcoded string !
+                date_to = "Today";
             } else {
                 date_to = dayTo + ". " + stringMonthTo + ", " + hourTodayTo + ":" + minTodayTo;
             }
@@ -190,11 +218,72 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             ((TextView) view.findViewById(R.id.exibit_end)).setText(date_to);
         }
 
-        if (checked_exibits.get(i).get(i1)) {
-            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);
-        } else {
-            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(false);
-        }
+        final SelectedExhibit selectedExhibit = new SelectedExhibit();
+        SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
+        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.event.getId());
+        call.enqueue(new Callback<SelectedExhibitList>() {
+            @Override
+            @DebugLog
+            public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
+                ((CheckBox) finalView.findViewById(R.id.checkbox)).setOnCheckedChangeListener(null);
+                System.out.println("abcdef" + response.body().getSelectedExhibits().size());
+                for (SelectedExhibit e : response.body().getSelectedExhibits()) {
+                    System.out.println("xxx" + e.getExhibit().getName());
+                    if (e.getExhibit().getId() == holder.mItem.getId()) {
+                        ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);
+                        selectedExhibit.setId(e.getId());
+                        break;
+                    } else {
+                        ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(false);
+                    }
+                }
+
+                ((CheckBox) finalView.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                        SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
+                        Call<Void> call;
+                        System.out.println("xxx event" + EventActivity_.event.getId());
+                        System.out.println("xxx exhibit" + holder.mItem.getId());
+                        if (checked) {
+                            System.out.println("xxx add");
+                            call = api.addSelectedExhibit(EventActivity_.event.getId(), new AddSelectedExhibit(holder.mItem.getId()));
+                            //checkedExhibitsApi.add(holder.mItem);
+                        } else {
+                            System.out.println("xxx delete");
+
+                            call = api.deleteSelectedExhibit(EventActivity_.event.getId(), selectedExhibit.getId());
+                            //checkedExhibitsApi.remove(holder.mItem);
+                        }
+                        call.enqueue(new Callback<Void>() {
+                            @DebugLog
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                            }
+
+                            @DebugLog
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            @DebugLog
+            public void onFailure(Call<SelectedExhibitList> call, Throwable t) {
+
+            }
+        });
+
+//        if (checked_exibits.get(i) != null && checked_exibits.get(i).get(i1)) {
+//            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(true);
+//        } else {
+//            ((CheckBox) finalView.findViewById(R.id.checkbox)).setChecked(false);
+//        }
 
         ((TextView) view.findViewById(R.id.description)).setText(holder.mItem.getDescription());
         ((TextView) view.findViewById(R.id.name)).setText(holder.mItem.getName());

@@ -1,6 +1,5 @@
 package sk.beacode.beacodeapp.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import org.androidannotations.annotations.EFragment;
 
@@ -57,9 +58,15 @@ public class ExhibitionDetailDialog extends DialogFragment {
         if (exhibit != null) {
             TextView name = (TextView) dialogView.findViewById(R.id.title_exibit);
             name.setText(exhibit.getName());
+            TextView date = (TextView) dialogView.findViewById(R.id.date);
+            if (exhibit.getStart() != null && exhibit.getEnd() != null) {
+                date.setText(String.format("%d - %d", exhibit.getStart().toLocaleString(), exhibit.getEnd().toLocaleString()));
+            }
             TextView description = (TextView) dialogView.findViewById(R.id.detailExhibitionXXX);
             description.setText(exhibit.getDescription());
+            System.out.println("qqqqq " + exhibit.getMainImage().getUri());
             ImageView photo = (ImageView) dialogView.findViewById(R.id.imageDetailExhibition);
+            Glide.with(this).load(exhibit.getMainImage().getUri()).into(photo);
             //photo.setImageBitmap(exhibit.getMainImage());
         }
 

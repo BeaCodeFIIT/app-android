@@ -7,27 +7,31 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="538dp"
-        android:background="#fff"
-        >
+        android:layout_height="500dp"
+        android:background="#fff">
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="260dp"
+            android:layout_height="200dp"
             android:id="@+id/imageDetailExhibition" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title_exibit"
-            android:textSize="16pt"
+            android:textSize="12pt"
             android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/detailExhibitionXXX"
-        />
+            android:id="@+id/date"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detailExhibitionXXX"/>
 
         <Button
             android:text="Close"

@@ -17,6 +17,7 @@ public class Pin {
     public enum Color {
         BLUE,
         RED,
+        GREEN,
     }
 
     private PointF location;
@@ -49,6 +50,9 @@ public class Pin {
                     break;
                 case RED:
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pin_icon_red);
+                    break;
+                case GREEN:
+                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pin_icon_green);
                     break;
                 default:
                     bitmap = null;

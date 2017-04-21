@@ -6,12 +6,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -26,7 +24,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.adapters.CategoryAdapter;
@@ -89,6 +86,8 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 
         descriptionView.setText(event.getDescription());
 
+        mExhibits.setNestedScrollingEnabled(true);
+
         if (null != event.getCategories()){
             mAdapter = new CategoryAdapter(this, event.getCategories());
             mExhibits.setAdapter(mAdapter);
@@ -146,6 +145,7 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
                 return true;
             }
         }).into(mainPhotoView);
+        Glide.with(this).load(event.getMainImage().getUri()).into(mainPhotoView);
 
         gallery.bind(event.getImages());
     }

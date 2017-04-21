@@ -174,4 +174,49 @@ public class Event implements SearchSuggestion, Parcelable {
         }
         return null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Event event = (Event) o;
+
+        if (getId() != event.getId()) return false;
+        if (getName() != null ? !getName().equals(event.getName()) : event.getName() != null)
+            return false;
+        if (getStart() != null ? !getStart().equals(event.getStart()) : event.getStart() != null)
+            return false;
+        if (getEnd() != null ? !getEnd().equals(event.getEnd()) : event.getEnd() != null)
+            return false;
+        if (getDescription() != null ? !getDescription().equals(event.getDescription()) : event.getDescription() != null)
+            return false;
+        if (getLocation() != null ? !getLocation().equals(event.getLocation()) : event.getLocation() != null)
+            return false;
+        if (getImages() != null ? !getImages().equals(event.getImages()) : event.getImages() != null)
+            return false;
+        if (getExhibits() != null ? !getExhibits().equals(event.getExhibits()) : event.getExhibits() != null)
+            return false;
+        if (getCategories() != null ? !getCategories().equals(event.getCategories()) : event.getCategories() != null)
+            return false;
+        if (getBeacons() != null ? !getBeacons().equals(event.getBeacons()) : event.getBeacons() != null)
+            return false;
+        return getMap() != null ? getMap().equals(event.getMap()) : event.getMap() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId();
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getStart() != null ? getStart().hashCode() : 0);
+        result = 31 * result + (getEnd() != null ? getEnd().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getLocation() != null ? getLocation().hashCode() : 0);
+        result = 31 * result + (getImages() != null ? getImages().hashCode() : 0);
+        result = 31 * result + (getExhibits() != null ? getExhibits().hashCode() : 0);
+        result = 31 * result + (getCategories() != null ? getCategories().hashCode() : 0);
+        result = 31 * result + (getBeacons() != null ? getBeacons().hashCode() : 0);
+        result = 31 * result + (getMap() != null ? getMap().hashCode() : 0);
+        return result;
+    }
 }

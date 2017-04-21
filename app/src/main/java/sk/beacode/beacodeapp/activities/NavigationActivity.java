@@ -1,6 +1,7 @@
 package sk.beacode.beacodeapp.activities;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
@@ -37,7 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,16 +47,25 @@ import java.util.List;
 
 import butterknife.BindView;
 import hugo.weaving.DebugLog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.domain.Localization;
 import sk.beacode.beacodeapp.domain.Trilateration;
 import sk.beacode.beacodeapp.domain.entity.BeaconEntity;
 import sk.beacode.beacodeapp.domain.entity.PointEntity;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
+import sk.beacode.beacodeapp.managers.Manager;
+import sk.beacode.beacodeapp.managers.NotificationManager;
+import sk.beacode.beacodeapp.managers.SelectedExhibitsApi;
+import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.models.Pin;
 import sk.beacode.beacodeapp.models.Pixel;
+import sk.beacode.beacodeapp.models.SelectedExhibit;
+import sk.beacode.beacodeapp.models.SelectedExhibitList;
 import sk.beacode.beacodeapp.views.PinView;
 
 
@@ -82,7 +91,18 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         setContentView(R.layout.activity_navigation);
         //ButterKnife.bind(this);
 
-
+        Intent intent = getIntent();
+        int exhibitId = intent.getIntExtra("exhibitId", -1);
+        if (exhibitId != -1) {
+            for (Category c : event.getCategories()) {
+                for (Exhibit e : c.getExhibits()) {
+                    if (e.getId() == exhibitId) {
+                        showExhibitDialog(e);
+                        break;
+                    }
+                }
+            }
+        }
 
         downloadMap(event.getMap().getUri());
 
@@ -242,14 +262,14 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         if (x < 0) {
             x = 0;
         }
-        if (x > 3962) {
-            x = 3962;
+        if (x > 10521) {
+            x = 10521;
         }
         if (y < 0) {
             y = 200;
         }
-        if (y > 587) {
-            y = 587;
+        if (y > 1627) {
+            y = 1627;
         }
         mapView.setUserPosition(new Pixel((int) x, (int) y));
 
@@ -288,13 +308,23 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
             showMap(svg);
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SVGParseException e) {
+        } catch (SVGParseException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showExhibitDetail(Exhibit exhibit) {
+        if (exhibit == null) {
+            new MaterialDialog.Builder(NavigationActivity.this)
+                    .title("No exhibit")
+                    .show();
+            return;
+        }
+
+        new MaterialDialog.Builder(NavigationActivity.this)
+                .title(exhibit.getName())
+                .content(exhibit.getDescription())
+                .show();
     }
 
     @UiThread
@@ -311,22 +341,18 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                                 && pin.getLocation().y >= sCoord.y - 100 && pin.getLocation().y <= sCoord.y + 100) {
                             Integer exhibitId = event.getBeacon(pin.getMinor()).getExhibitId();
                             if (exhibitId != null) {
-                                for (Exhibit ex : event.getExhibits()) {
-                                    if (ex.getId() == exhibitId) {
-                                        new MaterialDialog.Builder(NavigationActivity.this)
-                                                .title(ex.getName())
-                                                .content(ex.getDescription())
-                                                .show();
-                                        break;
+                                for (Category cat : event.getCategories()) {
+                                    for (Exhibit ex : cat.getExhibits()) {
+                                        if (ex.getId() == exhibitId) {
+                                            showExhibitDialog(ex);
+                                            return true;
+                                        }
                                     }
                                 }
                             } else {
-                                new MaterialDialog.Builder(NavigationActivity.this)
-                                        .title(Integer.toString(pin.getMinor()))
-                                        .content("No exhibit for this beacon")
-                                        .show();
+                                showExhibitDetail(null);
+                                return true;
                             }
-                            break;
                         }
                     }
                 }
@@ -354,16 +380,42 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         mapView.setImage(ImageSource.bitmap(newBM));
         mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        for (sk.beacode.beacodeapp.models.Beacon beacon : event.getBeacons()) {
-            addPin(beacon.getX(), beacon.getY(), Pin.Color.BLUE, beacon.getMinor());
-        }
+        SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
+        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.event.getId());
+        call.enqueue(new Callback<SelectedExhibitList>() {
+            @Override
+            public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
+                for (sk.beacode.beacodeapp.models.Beacon beacon : event.getBeacons()) {
+                    // TODO
+                    Pin.Color color = response.body().getSelectedExhibits().size() == 0 ? Pin.Color.GREEN : Pin.Color.BLUE;
 
+                    for (SelectedExhibit s : response.body().getSelectedExhibits()) {
+                        if (beacon.getExhibitId() != null && s.getExhibit().getId() == beacon.getExhibitId()) {
+                            color = Pin.Color.GREEN;
+                            break;
+                        }
+                    }
+
+                    addPin(beacon.getX(), beacon.getY(), color, beacon.getMinor());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SelectedExhibitList> call, Throwable t) {
+                for (sk.beacode.beacodeapp.models.Beacon beacon : event.getBeacons()) {
+                    addPin(beacon.getX(), beacon.getY(), Pin.Color.BLUE, beacon.getMinor());
+                }
+            }
+        });
     }
 
     @DebugLog
     public void addPin(double x, double y, Pin.Color color, int minor) {
+        if (minor < 68) {
+            return;
+        }
         PinView mapView = (PinView) findViewById(R.id.map);
-        mapView.addPin(new Pixel((int) (x / 1.75), (int) (y / 1.75)), color, minor);
+        mapView.addPin(new Pixel((int) (x * 1.6), (int) (y * 1.55)), color, minor);
     }
 
     @Override
@@ -383,7 +435,7 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
             @Override
             @DebugLog
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                List<BeaconEntity> sortedBeacons = new ArrayList<>();
+                final List<BeaconEntity> sortedBeacons = new ArrayList<>();
                 System.out.println(sortedBeacons.size());
                 for (Beacon b : beacons) {
                     double d0_rssi = -74;
@@ -401,12 +453,13 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                     double x;
                     double y;
                     if (beaconApi != null) {
-                        x = beaconApi.getX() / 175;
-                        y = beaconApi.getY() / 175;
-                    } else {
+                        x = beaconApi.getX() * 1.6 / 100;
+                        y = beaconApi.getY() * 1.55 / 100;
+                    }
+                    else {
                         continue;
                     }
-//                    } else if (beaconEntity.getMinor() == 6) {
+//                    else if (beaconEntity.getMinor() == 6) {
 //                        x = 0.60;
 //                        y = 0;
 //                    } else if (beaconEntity.getMinor() == 5) {
@@ -451,6 +504,39 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
                 System.out.println(String.format("position: x = %f, y = %f", position.getX() * 100, position.getY() * 100));
                 updatePosition(position.getX() * 100, position.getY() * 100);
+
+                SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
+                Call<SelectedExhibitList> call = api.getSelectedExhibits(event.getId());
+                call.enqueue(new Callback<SelectedExhibitList>() {
+                    @Override
+                    @DebugLog
+                    public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
+                        for (BeaconEntity e : sortedBeacons) {
+                            if (e.getDistance() > 1) {
+                                break;
+                            }
+
+                            Integer exhibitId = event.getBeacon(e.getMinor()).getExhibitId();
+                            //Integer exhibitId = 6;
+                            for (SelectedExhibit s : response.body().getSelectedExhibits()) {
+                                if (s.getExhibit().getId() == exhibitId) {
+                                    //NotificationManager.getInstance().showNotification(NavigationActivity.this, NavigationActivity_.class, s.getExhibit().getName(), s.getExhibit().getDescription());
+                                    NotificationManager notificationManager = NotificationManager.getInstance();
+                                    if (notificationManager.shouldDisplayNotification(exhibitId)) {
+                                        //notificationManager.showNotification(NavigationActivity.this, NavigationActivity_.class, exhibitId, Integer.toString(e.getMajor()), Integer.toString(e.getMinor()));
+                                        notificationManager.showNotification(NavigationActivity.this, NavigationActivity_.class, exhibitId, s.getExhibit().getName(), s.getExhibit().getDescription());
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SelectedExhibitList> call, Throwable t) {
+
+                    }
+                });
             }
         });
 
