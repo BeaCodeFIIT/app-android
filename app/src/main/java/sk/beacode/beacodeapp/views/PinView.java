@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.models.Pin;
+import sk.beacode.beacodeapp.models.PinBuilderImpl;
 import sk.beacode.beacodeapp.models.Pixel;
 import sk.beacode.beacodeapp.models.Point;
 
@@ -42,9 +43,7 @@ public class PinView extends SubsamplingScaleImageView {
     public void setUserPosition(Pixel pixel) {
         //Pixel pixel = pointToPixel(location);
 
-        userPosition = new Pin();
-        userPosition.setColor(Pin.Color.RED);
-        userPosition.setLocation(new PointF(pixel.getX(), pixel.getY()));
+        userPosition = new PinBuilderImpl().setColor(Pin.Color.RED).setLocation(new PointF(pixel.getX(), pixel.getY())).build();
 
         initialise();
         invalidate();

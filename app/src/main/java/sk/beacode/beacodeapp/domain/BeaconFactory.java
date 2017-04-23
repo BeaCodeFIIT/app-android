@@ -5,21 +5,16 @@ import android.content.Context;
 
 public class BeaconFactory {
 
-    public enum BeaconType {
-        GIMBAL,
-        IBEACON,
-    }
-
     private BeaconFactory() {}
 
-    public static Beacon getBeacon(Context context, BeaconType beaconType) {
+    public static Beacon getBeacon(Context context, String beaconType) {
         switch (beaconType) {
-            case GIMBAL:
+            case "GIMBAL":
                 return new GimbalBeacon(context);
-            case IBEACON:
+            case "IBEACON":
                 return new IBeaconBeacon(context);
             default:
-                return null;
+                return new NullBeacon(context);
         }
     }
 }

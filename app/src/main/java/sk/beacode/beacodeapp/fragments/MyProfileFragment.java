@@ -1,24 +1,13 @@
 package sk.beacode.beacodeapp.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,113 +53,6 @@ public class MyProfileFragment extends Fragment {
 
     @ViewById(R.id.add_interest)
     Button addInterestButton;
-
-    public static class AddInterestDialog extends DialogFragment {
-        private ProfileListener listener;
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.fragment_dialog_add_interest, null);
-            dialogBuilder.setView(dialogView);
-
-            dialogBuilder
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            EditText interestField = (EditText) getDialog().findViewById(R.id.new_interest);
-                            String name = interestField.getText().toString();
-                            if (name.length() > 0) {
-                                listener.onAddInterest(new Interest().setName(name));
-                            }
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            AddInterestDialog.this.getDialog().cancel();
-                        }
-                    });
-            return dialogBuilder.create();
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-
-            try {
-                listener = (ProfileListener) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString() + " must implement ProfileListener");
-            }
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            TypedValue typedValue = new TypedValue();
-            getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-            int color = typedValue.data;
-            ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(color);
-            ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(color);
-        }
-    }
-
-    public static class ChangeProfilePhotoDialog extends DialogFragment {
-        private ProfileListener listener;
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE );
-            final View dialogView = inflater.inflate(R.layout.fragment_dialog_change_profile, null);
-            builder.setView(dialogView);
-            final TextView cameraBtn = (TextView) dialogView.findViewById(R.id.camera);
-            final TextView galleryBtn = (TextView) dialogView.findViewById(R.id.gallery);
-
-            cameraBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
-                }
-            });
-            galleryBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(
-                            Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    intent.setType("image/*");
-                    startActivityForResult(
-                            Intent.createChooser(intent, "Select Picture"),
-                            1);
-                }
-            });
-            return builder.create();
-
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-
-            try {
-                listener = (ProfileListener) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString() + " must implement ProfileListener");
-            }
-        }
-
-        public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-            super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-            Uri imageUri = imageReturnedIntent.getData();
-            if ((requestCode == 0 || requestCode == 1) && resultCode == Activity.RESULT_OK) {
-                listener.onChangeUserPicture(imageUri);
-                this.getDialog().cancel();
-            }
-        }
-    }
 
     public void setProfileListener(ProfileListener listener) {
         this.listener = listener;

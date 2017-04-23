@@ -13,12 +13,10 @@ import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import sk.beacode.beacodeapp.R;
@@ -88,7 +86,7 @@ public class MyEventsFragment extends Fragment {
         }
 
         void showEvent(View v) {
-            EventActivity.event = event;
+            EventActivity.setEvent(event);
             Intent intent = new Intent(v.getContext(), EventActivity_.class);
             v.getContext().startActivity(intent);
         }

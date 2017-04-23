@@ -13,11 +13,9 @@ import com.bumptech.glide.Glide;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
 
 import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.R;
-import sk.beacode.beacodeapp.managers.ExhibitManager;
 import sk.beacode.beacodeapp.models.Exhibit;
 
 @EViewGroup(R.layout.item_exhibit)
@@ -41,9 +39,6 @@ public class ExhibitListItemView extends LinearLayout implements Checkable {
     private Exhibit exhibit;
 
     private ExhibitListView.ExhibitListListener listener;
-
-    @RestService
-    ExhibitManager exhibitManager;
 
     public ExhibitListItemView(Context context) {
         super(context);

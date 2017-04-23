@@ -80,4 +80,8 @@ public abstract class BaseBeacon implements Beacon, BeaconConsumer {
     public void unbind() {
         manager.unbind(this);
     }
+
+    public boolean isNull() {
+        return false;
+    }
 }

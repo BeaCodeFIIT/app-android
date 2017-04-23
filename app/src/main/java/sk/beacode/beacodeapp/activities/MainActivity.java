@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        EventActivity.event = event;
+        EventActivity.setEvent(event);
         Intent intent = new Intent(this, EventActivity_.class);
         startActivity(intent);
     }

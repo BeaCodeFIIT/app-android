@@ -113,4 +113,8 @@ public class SearchEventsFragment extends Fragment {
             searchView.swapSuggestions(lastResults);
         }
     }
+
+    public void showSearchErrorMessage() {
+        // show search error message
+    }
 }

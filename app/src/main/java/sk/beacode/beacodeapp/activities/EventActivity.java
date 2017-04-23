@@ -57,7 +57,15 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
     @ViewById(R.id.navigate_btn)
     Button mNavigateBtn;
 
-    public static Event event;
+    private static Event event;
+
+    public static Event getEvent() {
+        return event;
+    }
+
+    public static void setEvent(Event event) {
+        EventActivity.event = event;
+    }
 
     CategoryAdapter mAdapter;
 
@@ -107,7 +115,7 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
 
     @Click(R.id.navigate_btn)
     void onNavigateClicked() {
-        NavigationActivity_.event = event;
+        NavigationActivity_.setEvent(event);
         Intent intent = new Intent(EventActivity.this, NavigationActivity_.class);
         startActivity(intent);
     }

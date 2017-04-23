@@ -71,4 +71,8 @@ public class Manager {
     public SelectedExhibitsApi getSelectedExhibitsApi() {
         return retrofit.create(SelectedExhibitsApi.class);
     }
+
+    public FeedbackApi getFeedbackApi() {
+        return retrofit.create(FeedbackApi.class);
+    }
 }

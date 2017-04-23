@@ -220,7 +220,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
         final SelectedExhibit selectedExhibit = new SelectedExhibit();
         SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
-        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.event.getId());
+        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.getEvent().getId());
         call.enqueue(new Callback<SelectedExhibitList>() {
             @Override
             @DebugLog
@@ -243,16 +243,16 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
                     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                         SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
                         Call<Void> call;
-                        System.out.println("xxx event" + EventActivity_.event.getId());
+                        System.out.println("xxx event" + EventActivity_.getEvent().getId());
                         System.out.println("xxx exhibit" + holder.mItem.getId());
                         if (checked) {
                             System.out.println("xxx add");
-                            call = api.addSelectedExhibit(EventActivity_.event.getId(), new AddSelectedExhibit(holder.mItem.getId()));
+                            call = api.addSelectedExhibit(EventActivity_.getEvent().getId(), new AddSelectedExhibit(holder.mItem.getId()));
                             //checkedExhibitsApi.add(holder.mItem);
                         } else {
                             System.out.println("xxx delete");
 
-                            call = api.deleteSelectedExhibit(EventActivity_.event.getId(), selectedExhibit.getId());
+                            call = api.deleteSelectedExhibit(EventActivity_.getEvent().getId(), selectedExhibit.getId());
                             //checkedExhibitsApi.remove(holder.mItem);
                         }
                         call.enqueue(new Callback<Void>() {

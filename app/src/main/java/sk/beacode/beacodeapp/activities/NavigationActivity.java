@@ -56,12 +56,17 @@ import sk.beacode.beacodeapp.domain.Trilateration;
 import sk.beacode.beacodeapp.domain.entity.BeaconEntity;
 import sk.beacode.beacodeapp.domain.entity.PointEntity;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
+import sk.beacode.beacodeapp.fragments.FeedbackDialog;
 import sk.beacode.beacodeapp.managers.Manager;
 import sk.beacode.beacodeapp.managers.NotificationManager;
 import sk.beacode.beacodeapp.managers.SelectedExhibitsApi;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
+import sk.beacode.beacodeapp.models.FeedbackNegativeState;
+import sk.beacode.beacodeapp.models.FeedbackPositiveState;
+import sk.beacode.beacodeapp.models.FeedbackState;
+import sk.beacode.beacodeapp.models.FeedbackStateContext;
 import sk.beacode.beacodeapp.models.Pin;
 import sk.beacode.beacodeapp.models.Pixel;
 import sk.beacode.beacodeapp.models.SelectedExhibit;
@@ -72,7 +77,18 @@ import sk.beacode.beacodeapp.views.PinView;
 @EActivity(R.layout.activity_navigation)
 public class NavigationActivity extends AppCompatActivity implements ExhibitionDetailDialog.ExhibitDetailListener, BeaconConsumer {
 
-    public static Event event;
+    private int MAP_WIDTH = 10521;
+    private int MAP_HEIGHT = 1627;
+
+    private static Event event;
+
+    public static Event getEvent() {
+        return event;
+    }
+
+    public static void setEvent(Event event) {
+        NavigationActivity.event = event;
+    }
 
     private boolean eventDialogOpened = false;
     private PointEntity lastLocation;
@@ -262,14 +278,14 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         if (x < 0) {
             x = 0;
         }
-        if (x > 10521) {
-            x = 10521;
+        if (x > MAP_WIDTH) {
+            x = MAP_WIDTH;
         }
         if (y < 0) {
-            y = 200;
+            y = 0;
         }
-        if (y > 1627) {
-            y = 1627;
+        if (y > MAP_HEIGHT) {
+            y = MAP_HEIGHT;
         }
         mapView.setUserPosition(new Pixel((int) x, (int) y));
 
@@ -327,6 +343,17 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                 .show();
     }
 
+    /**
+     * Return if x is from interval <a - b, a + b>
+     * @param n
+     * @param a
+     * @param b
+     * @return
+     */
+    private boolean isFromInterval(int n, int a, int b) {
+        return n >= a - b && n <= a + b;
+    }
+
     @UiThread
     public void showMap(SVG map) {
         final PinView mapView = (PinView) findViewById(R.id.map);
@@ -337,8 +364,11 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                 if (mapView.isReady()) {
                     PointF sCoord = mapView.viewToSourceCoord(e.getX(), e.getY());
                     for (Pin pin : mapView.getPins()) {
-                        if (pin.getLocation().x >= sCoord.x - 100 && pin.getLocation().x <= sCoord.x + 100
-                                && pin.getLocation().y >= sCoord.y - 100 && pin.getLocation().y <= sCoord.y + 100) {
+                        int xC = (int) pin.getLocation().x;
+                        int yC = (int) pin.getLocation().y;
+                        int xP = (int) sCoord.x;
+                        int yP = (int) sCoord.y;
+                        if (isFromInterval(xC, xP, 100) && isFromInterval(yC, yP, 100)) {
                             Integer exhibitId = event.getBeacon(pin.getMinor()).getExhibitId();
                             if (exhibitId != null) {
                                 for (Category cat : event.getCategories()) {
@@ -381,7 +411,7 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
-        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.event.getId());
+        Call<SelectedExhibitList> call = api.getSelectedExhibits(EventActivity_.getEvent().getId());
         call.enqueue(new Callback<SelectedExhibitList>() {
             @Override
             public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
@@ -513,6 +543,24 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                     public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
                         for (BeaconEntity e : sortedBeacons) {
                             if (e.getDistance() > 1) {
+                                FeedbackDialog dialog = new FeedbackDialog();
+                                String feedback = dialog.getInput();
+                                boolean positive = dialog.isInputPositive();
+
+                                FeedbackStateContext c = new FeedbackStateContext();
+
+                                FeedbackState state;
+                                if (positive) {
+                                    state = new FeedbackPositiveState();
+                                } else {
+                                    state = new FeedbackNegativeState();
+                                }
+
+                                c.setFeedback(feedback);
+                                c.setState(state);
+
+                                state.submit(c);
+
                                 break;
                             }
 
