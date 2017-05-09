@@ -18,6 +18,9 @@ import hugo.weaving.DebugLog;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.models.Exhibit;
 
+/**
+ * Item in the exhibit list
+ */
 @EViewGroup(R.layout.item_exhibit)
 public class ExhibitListItemView extends LinearLayout implements Checkable {
 

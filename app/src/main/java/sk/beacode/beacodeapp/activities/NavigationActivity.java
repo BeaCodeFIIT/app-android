@@ -43,7 +43,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import hugo.weaving.DebugLog;
@@ -56,24 +58,21 @@ import sk.beacode.beacodeapp.domain.Trilateration;
 import sk.beacode.beacodeapp.domain.entity.BeaconEntity;
 import sk.beacode.beacodeapp.domain.entity.PointEntity;
 import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
-import sk.beacode.beacodeapp.fragments.FeedbackDialog;
 import sk.beacode.beacodeapp.managers.Manager;
 import sk.beacode.beacodeapp.managers.NotificationManager;
 import sk.beacode.beacodeapp.managers.SelectedExhibitsApi;
 import sk.beacode.beacodeapp.models.Category;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
-import sk.beacode.beacodeapp.models.FeedbackNegativeState;
-import sk.beacode.beacodeapp.models.FeedbackPositiveState;
-import sk.beacode.beacodeapp.models.FeedbackState;
-import sk.beacode.beacodeapp.models.FeedbackStateContext;
 import sk.beacode.beacodeapp.models.Pin;
 import sk.beacode.beacodeapp.models.Pixel;
 import sk.beacode.beacodeapp.models.SelectedExhibit;
 import sk.beacode.beacodeapp.models.SelectedExhibitList;
 import sk.beacode.beacodeapp.views.PinView;
 
-
+/**
+ * Activity which shows a map with exhibits and user location.
+ */
 @EActivity(R.layout.activity_navigation)
 public class NavigationActivity extends AppCompatActivity implements ExhibitionDetailDialog.ExhibitDetailListener, BeaconConsumer {
 
@@ -100,6 +99,12 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
 
     private BeaconManager beaconManager;
     private final Localization localization = Localization.getInstance();
+
+    private Set<Integer> exhibitsWithSentFeedback = new HashSet<>();
+
+    private boolean shouldDisplayFeedbackDialog(Integer exhibitId) {
+        return !exhibitsWithSentFeedback.contains(exhibitId);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -272,6 +277,11 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         }
     }
 
+    /**
+     * Update user position.
+     * @param x - user position
+     * @param y - user position
+     */
     @UiThread
     void updatePosition(double x, double y) {
         PinView mapView = (PinView) findViewById(R.id.map);
@@ -439,6 +449,13 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         });
     }
 
+    /**
+     * Add pin onto specified position on the map.
+     * @param x
+     * @param y
+     * @param color
+     * @param minor
+     */
     @DebugLog
     public void addPin(double x, double y, Pin.Color color, int minor) {
         if (minor < 68) {
@@ -454,6 +471,17 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
         beaconManager.unbind(this);
     }
 
+    public void showFeedbackDialog(Exhibit exhibit) {
+        new MaterialDialog.Builder(this)
+                .title(exhibit.getName())
+                .customView(R.layout.dialog_feedback, false)
+                .positiveText("Rate")
+                .show();
+    }
+
+    /**
+     * Beacon listener
+     */
     @Override
     public void onBeaconServiceConnect() {
         try {
@@ -542,32 +570,52 @@ public class NavigationActivity extends AppCompatActivity implements ExhibitionD
                     @DebugLog
                     public void onResponse(Call<SelectedExhibitList> call, Response<SelectedExhibitList> response) {
                         for (BeaconEntity e : sortedBeacons) {
-                            if (e.getDistance() > 1) {
-                                FeedbackDialog dialog = new FeedbackDialog();
-                                String feedback = dialog.getInput();
-                                boolean positive = dialog.isInputPositive();
+                            if (e.getDistance() > 2.5) {
+                                Integer exhibitId = event.getBeacon(e.getMinor()).getExhibitId();
+                                //Integer exhibitId = 6;
+                                for (SelectedExhibit s : response.body().getSelectedExhibits()) {
+                                    if (exhibitId != null && s.getExhibit().getId() == exhibitId) {
+                                        //NotificationManager.getInstance().showNotification(NavigationActivity.this, NavigationActivity_.class, s.getExhibit().getName(), s.getExhibit().getDescription());
+                                        NotificationManager notificationManager = NotificationManager.getInstance();
+                                        if (!notificationManager.shouldDisplayNotification(exhibitId)
+                                                && shouldDisplayFeedbackDialog(exhibitId)) {
+                                            showFeedbackDialog(s.getExhibit());
+                                            exhibitsWithSentFeedback.add(exhibitId);
+                                            //notificationManager.showNotification(NavigationActivity.this, NavigationActivity_.class, exhibitId, Integer.toString(e.getMajor()), Integer.toString(e.getMinor()));
+                                            //notificationManager.showNotification(NavigationActivity.this, NavigationActivity_.class, exhibitId, s.getExhibit().getName(), s.getExhibit().getDescription());
+                                        }
 
-                                FeedbackStateContext c = new FeedbackStateContext();
-
-                                FeedbackState state;
-                                if (positive) {
-                                    state = new FeedbackPositiveState();
-                                } else {
-                                    state = new FeedbackNegativeState();
+                                    }
                                 }
+//                                FeedbackDialog dialog = new FeedbackDialog();
+//                                String feedback = dialog.getInput();
+//                                boolean positive = dialog.isInputPositive();
+//
+//                                FeedbackStateContext c = new FeedbackStateContext();
+//
+//                                FeedbackState state;
+//                                if (positive) {
+//                                    state = new FeedbackPositiveState();
+//                                } else {
+//                                    state = new FeedbackNegativeState();
+//                                }
+//
+//                                c.setFeedback(feedback);
+//                                c.setState(state);
+//
+//                                state.submit(c);
 
-                                c.setFeedback(feedback);
-                                c.setState(state);
+                                break;
+                            }
 
-                                state.submit(c);
-
+                            if (e.getDistance() > 1.5) {
                                 break;
                             }
 
                             Integer exhibitId = event.getBeacon(e.getMinor()).getExhibitId();
                             //Integer exhibitId = 6;
                             for (SelectedExhibit s : response.body().getSelectedExhibits()) {
-                                if (s.getExhibit().getId() == exhibitId) {
+                                if (exhibitId != null && s.getExhibit() != null && s.getExhibit().getId() == exhibitId) {
                                     //NotificationManager.getInstance().showNotification(NavigationActivity.this, NavigationActivity_.class, s.getExhibit().getName(), s.getExhibit().getDescription());
                                     NotificationManager notificationManager = NotificationManager.getInstance();
                                     if (notificationManager.shouldDisplayNotification(exhibitId)) {

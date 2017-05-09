@@ -17,6 +17,9 @@ import sk.beacode.beacodeapp.models.PinBuilderImpl;
 import sk.beacode.beacodeapp.models.Pixel;
 import sk.beacode.beacodeapp.models.Point;
 
+/**
+ * Image view with the possibility to add pins.
+ */
 public class PinView extends SubsamplingScaleImageView {
 
     private final List<Pin> pins = new ArrayList<>();
@@ -40,6 +43,10 @@ public class PinView extends SubsamplingScaleImageView {
         return new Pixel((int) Math.ceil(point.getX() * 56 + 222), (int) Math.ceil((729 - (point.getY() * 37))));
     }
 
+    /**
+     * Set user position
+     * @param pixel user position
+     */
     public void setUserPosition(Pixel pixel) {
         //Pixel pixel = pointToPixel(location);
 
@@ -49,6 +56,12 @@ public class PinView extends SubsamplingScaleImageView {
         invalidate();
     }
 
+    /**
+     * Add pin onto specified location
+     * @param location location
+     * @param color pin color
+     * @param minor beacon minor id
+     */
     public void addPin(Pixel location, Pin.Color color, int minor) {
         Pin pin = new Pin();
         pin.setColor(color);

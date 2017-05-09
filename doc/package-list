@@ -1,0 +1,10 @@
+sk.beacode.beacodeapp
+sk.beacode.beacodeapp.activities
+sk.beacode.beacodeapp.adapters
+sk.beacode.beacodeapp.domain
+sk.beacode.beacodeapp.domain.entity
+sk.beacode.beacodeapp.fragments
+sk.beacode.beacodeapp.managers
+sk.beacode.beacodeapp.models
+sk.beacode.beacodeapp.models.deserializers
+sk.beacode.beacodeapp.views

@@ -20,6 +20,9 @@ import java.util.List;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.models.Image;
 
+/**
+ * Horizontally scrollable gallery of images
+ */
 @EViewGroup(R.layout.view_horizontal_gallery)
 public class HorizontalGalleryView extends HorizontalScrollView {
 

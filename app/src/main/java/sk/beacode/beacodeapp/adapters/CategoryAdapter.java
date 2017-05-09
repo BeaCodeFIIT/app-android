@@ -1,5 +1,6 @@
 package sk.beacode.beacodeapp.adapters;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.androidannotations.annotations.UiThread;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,6 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.activities.EventActivity_;
+import sk.beacode.beacodeapp.fragments.ExhibitionDetailDialog;
 import sk.beacode.beacodeapp.managers.Manager;
 import sk.beacode.beacodeapp.managers.SelectedExhibitsApi;
 import sk.beacode.beacodeapp.models.AddSelectedExhibit;
@@ -33,7 +37,12 @@ import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.SelectedExhibit;
 import sk.beacode.beacodeapp.models.SelectedExhibitList;
 
+/**
+ * Adapter for displaying categorized exhibits in the EventActivity.
+ */
 public class CategoryAdapter extends BaseExpandableListAdapter {
+
+    FragmentManager fragmentManager;
 
     public static final class GroupViewHolder {
 
@@ -73,9 +82,10 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     //private List<List<Boolean>> checked_exibits = new ArrayList<>();
     //private List<Exhibit> checkedExhibitsApi = new ArrayList<>();
 
-    public CategoryAdapter(Context context, List<Category> items) {
+    public CategoryAdapter(FragmentManager fragmentManager, Context context, List<Category> items) {
         mItems = items;
         mInflater = LayoutInflater.from(context);
+        this.fragmentManager = fragmentManager;
 
 //        SelectedExhibitsApi api = Manager.getInstance().getSelectedExhibitsApi();
 //
@@ -292,6 +302,19 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             ImageView photoView = (ImageView) view.findViewById(R.id.exhibit_image);
             Glide.with(photoView.getContext()).load(mainImage.getUri()).into(photoView);
         }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExhibitionDetailDialog dialog = new ExhibitionDetailDialog();
+                dialog.bind(holder.mItem);
+                try {
+                    dialog.show(fragmentManager, "");
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return view;
     }

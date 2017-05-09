@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import sk.beacode.beacodeapp.R;
 
+/**
+ * Change profile photo dialog
+ */
 public class ChangeProfilePhotoDialog extends DialogFragment {
 	private MyProfileFragment.ProfileListener listener;
 

@@ -20,6 +20,9 @@ import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.adapters.ExhibitAdapter;
 import sk.beacode.beacodeapp.models.Exhibit;
 
+/**
+ * List of exhibits
+ */
 @EViewGroup(R.layout.view_exhibit_list)
 public class ExhibitListView extends LinearLayout {
 

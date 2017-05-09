@@ -16,6 +16,9 @@ import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.views.RecentItemView;
 import sk.beacode.beacodeapp.views.RecentItemView_;
 
+/**
+ * Adapter for displaying search results.
+ */
 @EBean
 public class SearchEventsAdapter extends BaseAdapter {
 

@@ -14,6 +14,9 @@ import android.widget.EditText;
 import sk.beacode.beacodeapp.R;
 import sk.beacode.beacodeapp.models.Interest;
 
+/**
+ * Add interest dialog
+ */
 public class AddInterestDialog extends DialogFragment {
 	private MyProfileFragment.ProfileListener listener;
 

@@ -27,6 +27,9 @@ import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.EventQuery;
 import sk.beacode.beacodeapp.views.RecentItemView;
 
+/**
+ * Fragment for searching events
+ */
 @EFragment(R.layout.fragment_search_events)
 public class SearchEventsFragment extends Fragment {
 

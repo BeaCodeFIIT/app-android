@@ -53,6 +53,9 @@ import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.InterestList;
 import sk.beacode.beacodeapp.models.User;
 
+/**
+ * Main Activity.
+ */
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends AppCompatActivity

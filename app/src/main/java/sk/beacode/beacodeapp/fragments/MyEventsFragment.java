@@ -26,6 +26,9 @@ import sk.beacode.beacodeapp.adapters.MyEventsAdapter;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Exhibit;
 
+/**
+ * List of my events
+ */
 @EFragment(R.layout.fragment_my_events)
 public class MyEventsFragment extends Fragment {
 

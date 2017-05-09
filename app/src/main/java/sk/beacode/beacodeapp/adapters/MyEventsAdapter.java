@@ -18,6 +18,10 @@ import sk.beacode.beacodeapp.fragments.MyEventsFragment;
 import sk.beacode.beacodeapp.models.Event;
 import sk.beacode.beacodeapp.models.Image;
 
+
+/**
+ * Adapter for displaying events in the My Events fragment.
+ */
 public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsFragment.MyViewHolder> {
 
     private List<Event> data = new ArrayList<>();

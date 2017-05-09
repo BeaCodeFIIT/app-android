@@ -10,6 +10,9 @@ import org.androidannotations.annotations.ViewById;
 
 import sk.beacode.beacodeapp.models.Event;
 
+/**
+ * Recent item displayed in the search fragment
+ */
 @EViewGroup(android.R.layout.simple_expandable_list_item_1)
 public class RecentItemView extends LinearLayout {
 

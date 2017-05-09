@@ -33,6 +33,9 @@ import sk.beacode.beacodeapp.models.Exhibit;
 import sk.beacode.beacodeapp.views.ExhibitListView;
 import sk.beacode.beacodeapp.views.HorizontalGalleryView;
 
+/**
+ * Activity for displaying event details.
+ */
 @EActivity(R.layout.activity_event)
 public class EventActivity extends AppCompatActivity implements ExhibitListView.ExhibitListListener {
 
@@ -97,7 +100,7 @@ public class EventActivity extends AppCompatActivity implements ExhibitListView.
         mExhibits.setNestedScrollingEnabled(true);
 
         if (null != event.getCategories()){
-            mAdapter = new CategoryAdapter(this, event.getCategories());
+            mAdapter = new CategoryAdapter(getFragmentManager(), this, event.getCategories());
             mExhibits.setAdapter(mAdapter);
         }
 

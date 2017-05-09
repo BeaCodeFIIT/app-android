@@ -28,6 +28,9 @@ import sk.beacode.beacodeapp.models.Image;
 import sk.beacode.beacodeapp.models.Interest;
 import sk.beacode.beacodeapp.models.User;
 
+/**
+ * Profile fragment
+ */
 @EFragment(R.layout.fragment_my_profile)
 public class MyProfileFragment extends Fragment {
 
